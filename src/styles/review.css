@@ -1,0 +1,247 @@
+/* ============================================================
+   Training review & stats
+   ============================================================ */
+.review-section {
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-1);
+}
+
+.review-section h2 {
+  margin-bottom: 4px;
+  font-size: 1.05rem;
+}
+
+.review-section form {
+  margin-top: 14px;
+}
+
+.review-section legend {
+  margin-bottom: 10px;
+}
+
+.rating-options {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+  margin-bottom: 16px;
+}
+
+.rating-options label {
+  position: relative;
+  margin: 0;
+  padding: 10px 3px;
+  text-align: center;
+  cursor: pointer;
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  transition: border-color var(--dur-hover) var(--ease-out), background var(--dur-hover) var(--ease-out), box-shadow var(--dur-hover) var(--ease-out);
+}
+
+.rating-options label:hover {
+  background: var(--surface);
+  border-color: var(--line-strong);
+}
+
+/* 原生 radio 铺满整个选项：视觉隐藏但可点击、可聚焦，键盘与自动化都能命中。 */
+.rating-options input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  appearance: none;
+  cursor: pointer;
+}
+
+.rating-options b {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.rating-options span {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
+  color: var(--ink-3);
+  line-height: 1.35;
+}
+
+.rating-options label.chosen {
+  background: color-mix(in srgb, var(--brand-lime) 26%, #fff);
+  border-color: var(--brand-lime-deep);
+  box-shadow: inset 0 0 0 1px var(--brand-lime-deep);
+}
+
+.rating-options label.chosen span {
+  color: var(--ink-2);
+}
+
+.rating-options label:has(input:focus-visible) {
+  box-shadow: var(--focus-ring);
+}
+
+.training-stats {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.stats-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stats-heading h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.stats-heading select {
+  width: auto;
+  min-height: 34px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 12px;
+}
+
+.stats-grid > div {
+  padding: 10px 12px;
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+}
+
+.stats-grid dt {
+  font-size: 10.5px;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.stats-grid dd {
+  margin: 3px 0 0;
+  font-size: 1.4rem;
+  font-weight: var(--weight-bold);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.stats-grid dd small {
+  font-size: 10px;
+  font-weight: var(--weight-regular);
+  color: var(--ink-3);
+}
+
+.training-stats > p {
+  margin: 6px 0;
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+.training-stats > details {
+  margin-top: 10px;
+}
+
+.training-stats > details > summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  font-size: 11.5px;
+  font-weight: var(--weight-medium);
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.review-history {
+  display: grid;
+}
+
+.review-history a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  font-size: 11.5px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-2);
+}
+
+.review-history a > span:first-child {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.review-history b {
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.score-track {
+  width: 60px;
+  height: 6px;
+  overflow: hidden;
+  background: var(--surface-sunken);
+  border-radius: var(--r-pill);
+}
+
+.score-track i {
+  display: block;
+  height: 100%;
+  background: var(--brand-blue);
+  border-radius: inherit;
+}
+
+.panel .stats-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 560px) {
+  .review-section {
+    padding: 14px;
+  }
+
+  .rating-options {
+    gap: 4px;
+  }
+
+  .rating-options b {
+    font-size: 1.1rem;
+  }
+
+  .rating-options span {
+    font-size: 9px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stats-grid dd {
+    font-size: 1.25rem;
+  }
+}

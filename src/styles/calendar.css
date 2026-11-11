@@ -1,0 +1,900 @@
+/* ============================================================
+   Calendar — core workspace
+   ============================================================ */
+.calendar-page {
+  --columns: 1;
+}
+
+.calendar-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-5);
+}
+
+.calendar-heading > div:first-child {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 10px;
+}
+
+.calendar-heading .eyebrow {
+  flex-basis: 100%;
+  margin-bottom: 4px;
+}
+
+.calendar-heading h1 {
+  font-size: var(--text-page);
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.03em;
+}
+
+.calendar-month {
+  font-size: var(--text-secondary);
+  color: var(--ink-3);
+  font-weight: var(--weight-medium);
+}
+
+.heading-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.heading-actions .primary {
+  min-height: 40px;
+}
+
+/* ---------- Toolbar ---------- */
+.calendar-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin: var(--sp-5) 0 var(--sp-4);
+}
+
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px;
+  background: var(--surface-sunken);
+  border-radius: var(--r-lg);
+}
+
+.segmented button {
+  min-height: 32px;
+  padding: 0 18px;
+  font-size: 0.8rem;
+  font-weight: var(--weight-semibold);
+  color: var(--ink-3);
+  background: transparent;
+  border: 0;
+  border-radius: var(--r-sm);
+}
+
+.segmented button:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.segmented .selected {
+  color: var(--ink);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+}
+
+.calendar-date-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+}
+
+.calendar-date-nav .icon-button {
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  min-height: 34px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+}
+
+.calendar-date-nav input {
+  width: 148px;
+  min-height: 34px;
+  padding: 0 6px;
+  border: 0;
+  background: transparent;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.calendar-date-nav input:focus {
+  box-shadow: inset 0 0 0 2px rgba(66, 99, 235, 0.35);
+}
+
+.today-button {
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 0.78rem;
+  font-weight: var(--weight-bold);
+  color: var(--brand-blue);
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--line);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+}
+
+.today-button:hover {
+  background: var(--info-soft);
+  border-color: var(--line);
+}
+
+/* ---------- Caption ---------- */
+.calendar-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+
+.caption-main {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.caption-date {
+  font-size: 0.95rem;
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.01em;
+}
+
+.day-counts {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.day-counts span {
+  padding: 2px 9px;
+  font-size: 11px;
+  font-weight: var(--weight-medium);
+  color: var(--ink-2);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+}
+
+.day-counts .pending-count {
+  color: var(--warning);
+  background: var(--warning-soft);
+  border-color: var(--warning-line);
+}
+
+.calendar-key {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.calendar-key span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.calendar-key i {
+  width: 8px;
+  height: 8px;
+  border-radius: 3px;
+  display: block;
+}
+
+.key-course {
+  background: var(--brand-blue);
+}
+
+.key-free {
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+}
+
+.key-off {
+  background: var(--surface-sunken);
+  border: 1px solid var(--line);
+}
+
+/* ---------- Board ---------- */
+.schedule-board {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+}
+
+.week-board {
+  --columns: 7;
+}
+
+.board-head,
+.board-body {
+  display: grid;
+  grid-template-columns: 56px repeat(var(--columns), minmax(0, 1fr));
+}
+
+.board-head {
+  padding: 6px 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.board-head button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-width: 0;
+  padding: 4px 0;
+  font-size: 11px;
+  color: var(--ink-3);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.board-head button:hover {
+  background: var(--surface-muted);
+}
+
+.board-head .weekday {
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+}
+
+.board-head b {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  font-size: 0.9rem;
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  border-radius: 50%;
+}
+
+.board-head small {
+  font-size: 10px;
+  color: var(--ink-3);
+}
+
+.board-head .is-today b {
+  color: var(--ink-on-lime);
+  background: var(--brand-lime);
+  box-shadow: 0 4px 12px -6px rgba(185, 227, 34, 0.9);
+}
+
+.board-head .is-today .weekday,
+.board-head .is-selected .weekday {
+  color: var(--ink);
+  font-weight: var(--weight-semibold);
+}
+
+.board-head .is-selected:not(.is-today) b {
+  background: var(--canvas-deep);
+}
+
+.board-scroll {
+  max-height: 620px;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd3df transparent;
+}
+
+.time-gutter {
+  position: relative;
+  background: var(--surface);
+  border-right: 1px solid var(--line);
+}
+
+.time-gutter > span {
+  position: absolute;
+  right: 9px;
+  transform: translateY(-50%);
+  font-size: 10px;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+}
+
+/* 首个整点标签压在滚动容器顶边，居中位移会让上半截被裁掉（显示不全）。
+   改为顶对齐，其余整点仍按整点线居中。 */
+.time-gutter > span:first-child {
+  transform: translateY(1px);
+}
+
+.timeline-column {
+  position: relative;
+  min-width: 0;
+  background: var(--surface-sunken);
+  border-left: 1px solid var(--line);
+}
+
+.timeline-column:first-of-type {
+  border-left: 0;
+}
+
+.open-window {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+}
+
+.hour-rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--line);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.slot-button {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  height: 42px;
+  padding: 0 10px;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: var(--weight-medium);
+  color: var(--ink-3);
+  background: transparent;
+  border: 0;
+  border-radius: var(--r-sm);
+  z-index: 1;
+}
+
+.slot-button span {
+  opacity: 0;
+  transform: translateX(-3px);
+  transition: opacity var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-out);
+}
+
+.slot-button svg {
+  opacity: 0;
+}
+
+.slot-button:hover {
+  color: var(--ink);
+  background: linear-gradient(90deg, rgba(213, 250, 69, 0.42), rgba(213, 250, 69, 0.06));
+}
+
+.slot-button:hover span,
+.slot-button:hover svg,
+.slot-button:focus-visible span,
+.slot-button:focus-visible svg {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Booking card ----------
+ * 柔和类型浅底 + 同色系深字，靠字重/字号建立信息层级；
+ * 不使用色条、粗边框或强阴影（DESIGN 9.1 / 13）。 */
+.timeline-booking.booking {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 2px;
+  min-height: 0;
+  padding: 8px 10px;
+  overflow: hidden;
+  text-align: left;
+  color: var(--type-ink, var(--type-other-ink));
+  background: var(--type-bg, var(--type-other-bg));
+  border: 1px solid color-mix(in srgb, var(--type-ink, var(--type-other-ink)) 12%, transparent);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-1);
+  transition: background var(--dur-hover) var(--ease-out), border-color var(--dur-hover) var(--ease-out), box-shadow var(--dur-card) var(--ease-out);
+}
+
+/* 悬停：同一色系轻微加深 + 抬升一级层次 */
+.timeline-booking.booking:hover {
+  background: color-mix(in srgb, var(--type-bg, var(--type-other-bg)) 86%, var(--type-ink, var(--type-other-ink)));
+  border-color: color-mix(in srgb, var(--type-ink, var(--type-other-ink)) 24%, transparent);
+  box-shadow: var(--shadow-2);
+}
+
+.timeline-booking.booking:active {
+  background: color-mix(in srgb, var(--type-bg, var(--type-other-bg)) 78%, var(--type-ink, var(--type-other-ink)));
+  box-shadow: var(--shadow-1);
+}
+
+.timeline-booking.booking:focus-visible {
+  box-shadow: var(--focus-ring-dark);
+}
+
+.booking-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* 学员姓名：卡片里唯一的 600 字重主信息 */
+.timeline-booking.booking b {
+  font-size: 0.9rem;
+  font-weight: var(--weight-semibold);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.booking-warn {
+  flex-shrink: 0;
+  color: var(--warning);
+}
+
+/* 时间：等宽数字，作为次要信息压低对比 */
+.booking-time {
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in srgb, var(--type-ink, var(--type-other-ink)) 78%, transparent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.booking-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 2px;
+  min-width: 0;
+}
+
+/* 课程类型：小号文字标签，颜色由卡片底色承担，不再叠加色块 */
+.booking-type {
+  min-width: 0;
+  font-size: 10px;
+  color: color-mix(in srgb, var(--type-ink, var(--type-other-ink)) 72%, transparent);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 状态标签压在浅底上时收掉自身的底色，避免和类型色打架 */
+.timeline-booking.booking .status-badge {
+  background: color-mix(in srgb, #fff 62%, transparent);
+  border-color: color-mix(in srgb, var(--type-ink, var(--type-other-ink)) 16%, transparent);
+}
+
+.timeline-booking.completed.booking {
+  background: color-mix(in srgb, var(--type-bg, var(--type-other-bg)) 55%, var(--surface));
+  border-color: color-mix(in srgb, var(--type-ink, var(--type-other-ink)) 10%, transparent);
+}
+
+.timeline-booking.completed.booking b {
+  font-weight: var(--weight-medium);
+  color: color-mix(in srgb, var(--type-ink, var(--type-other-ink)) 72%, transparent);
+}
+
+.timeline-booking.short.booking {
+  padding: 3px 8px;
+  gap: 0;
+}
+
+.timeline-booking.short.booking b {
+  font-size: 0.78rem;
+}
+
+.timeline-booking.short .booking-time {
+  font-size: 9.5px;
+}
+
+.timeline-booking.short .booking-meta {
+  display: none;
+}
+
+/* 周视图没有状态标签的位置：待确认用虚边区分，避免只靠颜色 */
+.timeline-compact .timeline-booking.pending.booking {
+  border-style: dashed;
+}
+
+.timeline-compact .timeline-booking.booking {
+  padding: 3px 4px;
+  gap: 0;
+  border-radius: var(--r-xs);
+}
+
+.timeline-compact .timeline-booking.booking b {
+  font-size: 11px;
+  line-height: 1.35;
+  white-space: normal;
+}
+
+.timeline-compact .booking-time {
+  font-size: 9px;
+}
+
+.timeline-compact .booking-meta {
+  display: none;
+}
+
+/* ---------- Now indicator ---------- */
+.now-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  height: 2px;
+  background: var(--brand-coral);
+  box-shadow: 0 0 0 1px rgba(255, 112, 82, 0.15);
+  pointer-events: none;
+}
+
+.now-line i {
+  position: absolute;
+  left: -1px;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand-coral);
+  box-shadow: 0 0 0 3px rgba(255, 112, 82, 0.18);
+}
+
+/* ---------- Month ---------- */
+.month-board {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+}
+
+.month-weekdays,
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.month-weekdays {
+  padding: 11px 0;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.month-grid button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  min-height: 112px;
+  padding: 10px 2px;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  border-radius: 0;
+}
+
+.month-grid button:nth-child(7n) {
+  border-right: 0;
+}
+
+.month-grid button:hover {
+  background: var(--surface-muted);
+}
+
+.month-grid b {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  font-size: 0.85rem;
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  border-radius: 50%;
+}
+
+.month-grid span {
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+
+.month-grid .is-today b {
+  color: var(--ink-on-lime);
+  background: var(--brand-lime);
+}
+
+.month-grid .is-selected {
+  background: color-mix(in srgb, var(--brand-lime) 16%, #fff);
+}
+
+.month-grid .outside-month {
+  color: var(--ink-3);
+  background: var(--surface-muted);
+}
+
+.month-grid .outside-month b {
+  opacity: 0.55;
+}
+
+.month-dots {
+  display: flex;
+  gap: 3px;
+  height: 5px;
+}
+
+.month-dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--type-ink, var(--type-other-ink));
+}
+
+.month-dots i.pending {
+  background: var(--warning);
+}
+
+/* ---------- Lists ---------- */
+.cancelled-list,
+.calendar-review {
+  margin-top: var(--sp-3);
+  padding: 0 var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-1);
+}
+
+.cancelled-list summary,
+.calendar-review > summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 46px;
+  font-size: 0.8rem;
+  font-weight: var(--weight-semibold);
+  color: var(--ink-2);
+  cursor: pointer;
+  list-style: none;
+}
+
+.cancelled-list summary::-webkit-details-marker,
+.calendar-review > summary::-webkit-details-marker {
+  display: none;
+}
+
+.cancelled-list summary::after,
+.calendar-review > summary::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  margin-left: auto;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--dur-card) var(--ease-out);
+}
+
+.cancelled-list[open] summary::after,
+.calendar-review[open] > summary::after {
+  transform: rotate(-135deg);
+}
+
+.cancelled-booking {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 0;
+  padding: 11px 0;
+  font-size: 0.8rem;
+  color: var(--ink-3);
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+}
+
+.cancelled-tag {
+  padding: 1px 8px;
+  font-size: 10px;
+  color: var(--ink-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+}
+
+.calendar-review .training-stats {
+  margin: 0;
+  padding: 0 0 var(--sp-4);
+  border: 0;
+}
+
+.calendar-alert {
+  margin-bottom: var(--sp-3);
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  color: var(--warning);
+  background: var(--warning-soft);
+  border: 1px solid var(--warning-line);
+  border-radius: var(--r-md);
+}
+
+.calendar-alert summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  font-weight: var(--weight-semibold);
+  list-style: none;
+}
+
+.calendar-alert summary::-webkit-details-marker {
+  display: none;
+}
+
+.calendar-alert a {
+  display: block;
+  padding-top: 9px;
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-decoration-color: rgba(168, 106, 16, 0.35);
+  text-underline-offset: 3px;
+}
+
+.schedule-board:not(.week-board) .board-head {
+  display: none;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .calendar-heading {
+    margin-bottom: var(--sp-4);
+  }
+
+  .calendar-heading h1 {
+    font-size: 1.5rem;
+  }
+
+  .calendar-toolbar {
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: var(--sp-4) 0 var(--sp-3);
+  }
+
+  .calendar-date-nav {
+    margin-left: auto;
+  }
+
+  .board-head,
+  .board-body {
+    grid-template-columns: 44px repeat(var(--columns), minmax(0, 1fr));
+  }
+
+  .week-board .board-head,
+  .week-board .board-body {
+    grid-template-columns: 36px repeat(7, minmax(0, 1fr));
+  }
+
+  /* 周视图时间槽很窄，整点标签需要缩小字号并收回右边距，否则左侧会被裁掉 */
+  .week-board .time-gutter > span {
+    right: 4px;
+    font-size: 9px;
+  }
+
+  .board-scroll {
+    max-height: 560px;
+  }
+
+  .timeline-compact .booking-time {
+    display: none;
+  }
+
+  .board-head b {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  .slot-button span {
+    opacity: 1;
+    transform: none;
+    color: var(--ink-3);
+  }
+
+  .month-grid button {
+    min-height: 84px;
+    padding: 7px 1px;
+    gap: 3px;
+  }
+
+  .month-grid b {
+    font-size: 13px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .month-grid span {
+    font-size: 9.5px;
+  }
+
+  .calendar-key {
+    gap: 9px;
+    font-size: 10.5px;
+  }
+
+  .caption-date {
+    font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .segmented button {
+    padding: 0 15px;
+  }
+
+  .calendar-date-nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .calendar-date-nav input {
+    width: auto;
+    flex: 1;
+    text-align: center;
+  }
+
+  .calendar-key {
+    display: none;
+  }
+
+  .day-counts span {
+    padding: 2px 7px;
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .timeline-booking {
+    animation: booking-in 180ms var(--ease-out);
+  }
+
+  @keyframes booking-in {
+    from {
+      opacity: 0;
+      transform: translateY(2px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}

@@ -1,0 +1,145 @@
+/* Tempo Design Tokens · Neo Athletic
+ * 单一来源：颜色、字体、间距、圆角、层次、动效。
+ * 业务组件只允许引用变量，不直接写死品牌色与阴影。
+ */
+:root {
+  color-scheme: light;
+
+  /* ---------- Brand ---------- */
+  --brand-lime: #d5fa45;
+  --brand-lime-deep: #b9e322;
+  --brand-lime-ink: #232c07;
+  --brand-coral: #ff7052;
+  --brand-blue: #4263eb;
+  --brand-blue-deep: #3350d4;
+
+  /* ---------- Surface ---------- */
+  --graphite-950: #14181d;
+  --graphite-900: #191e24;
+  --graphite: #20252c;
+  --graphite-700: #2a313a;
+  --graphite-600: #363e49;
+
+  --canvas: #f3f5f8;
+  --canvas-deep: #e9ecf2;
+  --surface: #ffffff;
+  --surface-muted: #f8f9fb;
+  --surface-sunken: #eef1f5;
+
+  --line: #e3e7ee;
+  --line-strong: #cfd5e0;
+  --line-dark: rgba(255, 255, 255, 0.1);
+
+  /* ---------- Text ---------- */
+  --ink: #1b2027;
+  --ink-2: #48515e;
+  --ink-3: #727c8a;
+  --ink-on-dark: #f2f4f8;
+  --ink-on-dark-dim: #9aa4b2;
+  --ink-on-lime: #1d2606;
+
+  /* ---------- Course type tones ----------
+   * 课程类型识别色：浅底 + 同色系深字。只由类型名称决定，与状态色、品牌色分离。
+   * 状态色（success/warning/danger/info）不得复用这里的颜色。 */
+  --type-strength-bg: #e2f1df;
+  --type-strength-ink: #356b43;
+
+  --type-functional-bg: #eae5fa;
+  --type-functional-ink: #6851a0;
+
+  --type-pilates-bg: #fce9db;
+  --type-pilates-ink: #a45d35;
+
+  --type-cardio-bg: #dfebfc;
+  --type-cardio-ink: #4268a5;
+
+  --type-recovery-bg: #f9e5ed;
+  --type-recovery-ink: #a64d70;
+
+  --type-other-bg: #f0f1f3;
+  --type-other-ink: #59616d;
+
+  /* ---------- Semantic ---------- */
+  --success: #1f7d55;
+  --success-soft: #e4f4ec;
+  --success-line: #bfe3d2;
+  --warning: #a86a10;
+  --warning-soft: #fdf1dd;
+  --warning-line: #f0d6a8;
+  --danger: #c8404a;
+  --danger-soft: #fdeaea;
+  --danger-line: #f3c9cc;
+  --info: #3a55cf;
+  --info-soft: #eaeeff;
+  --info-line: #c8d2fb;
+
+  /* ---------- Type ---------- */
+  --font-sans: Inter, "PingFang SC", "HarmonyOS Sans SC", "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+  --font-num: "SF Mono", "JetBrains Mono", ui-monospace, "Cascadia Mono", Menlo, monospace;
+
+  --text-display: clamp(2.5rem, 3.4vw, 3rem);
+  --text-page: clamp(1.55rem, 2vw, 1.8rem);
+  --text-section: 1.15rem;
+  --text-card: 0.98rem;
+  --text-body: 0.92rem;
+  --text-secondary: 0.8rem;
+  --text-caption: 0.72rem;
+
+  --leading-tight: 1.15;
+  --leading-body: 1.65;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-black: 800;
+
+  /* ---------- Space · 4px grid ---------- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 40px;
+  --sp-9: 48px;
+  --sp-10: 64px;
+
+  /* ---------- Radius ---------- */
+  --r-xs: 6px;
+  --r-sm: 8px;
+  --r-md: 10px;
+  --r-lg: 12px;
+  --r-card: 16px;
+  --r-page: 20px;
+  --r-pill: 999px;
+
+  /* ---------- Elevation ---------- */
+  --shadow-1: 0 1px 2px rgba(20, 24, 29, 0.05), 0 1px 3px rgba(20, 24, 29, 0.04);
+  --shadow-2: 0 10px 24px -12px rgba(20, 24, 29, 0.22), 0 2px 6px rgba(20, 24, 29, 0.04);
+  --shadow-3: 0 32px 70px -28px rgba(20, 24, 29, 0.4), 0 6px 18px rgba(20, 24, 29, 0.08);
+  --shadow-lime: 0 10px 30px -12px rgba(185, 227, 34, 0.6);
+
+  /* ---------- Focus ---------- */
+  --focus-ring: 0 0 0 3px rgba(66, 99, 235, 0.32);
+  --focus-ring-dark: 0 0 0 2px var(--graphite), 0 0 0 4px var(--brand-lime);
+
+  /* ---------- Motion ---------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-hover: 140ms;
+  --dur-button: 160ms;
+  --dur-card: 200ms;
+  --dur-drawer: 280ms;
+  --dur-modal: 220ms;
+
+  /* ---------- Layout ---------- */
+  --sidebar-w: 240px;
+  --page-max: 1440px;
+  --page-pad: clamp(20px, 3vw, 40px);
+  --topbar-h: 64px;
+
+  /* ---------- Course type fallback ---------- */
+  --type-color: var(--brand-blue);
+}

@@ -1,0 +1,13 @@
+<script setup lang="ts">
+import {computed,ref,watch} from 'vue';
+import {useTempo} from '../stores/tempo';
+import '../styles/review.css';
+const props=defineProps<{bookingId:string}>();
+const store=useTempo();
+const existing=computed(()=>store.data.reviews.find(r=>r.booking_id===props.bookingId));
+const rating=ref(0),effort=ref<number|null>(null),minutes=ref(60),notes=ref(''),error=ref(''),saved=ref(false);
+const descriptions=['需要调整','有待提升','达到计划','表现良好','表现出色'];
+watch(()=>props.bookingId,()=>{const b=store.data.bookings.find(b=>b.id===props.bookingId),r=existing.value;rating.value=r?.rating??0;effort.value=r?.effort??null;minutes.value=r?.actual_minutes??(b?Math.round((Date.parse(b.end_at)-Date.parse(b.start_at))/60000):60);notes.value=r?.notes??'';saved.value=false;error.value=''}, {immediate:true});
+function save(){try{store.review(props.bookingId,{rating:rating.value,effort:effort.value,actual_minutes:minutes.value,notes:notes.value});saved.value=true;error.value=''}catch(e){error.value=e instanceof Error?e.message:'保存失败，请重试'}}
+</script>
+<template><section class="review-section"><h2>课后反馈</h2><form @submit.prevent="save" @input="saved=false" @change="saved=false"><fieldset><legend>训练表现 · 教练评分</legend><div class="rating-options"><label v-for="(description,i) in descriptions" :key="i" :class="{chosen:rating===i+1}"><input type="radio" v-model="rating" :value="i+1" name="rating" required><b>{{i+1}}</b><span>{{description}}</span></label></div></fieldset><div class="two"><label>实际训练时长（分钟）<input type="number" min="1" max="600" step="1" v-model.number="minutes" required></label><label>学员反馈用力程度<select v-model="effort"><option :value="null">未询问 / 不记录</option><option v-for="n in 10" :key="n" :value="n">{{n}} / 10</option></select></label></div><p class="muted">1 轻松 · 10 极其吃力 · 学员口述</p><label>训练记录（选填）<textarea v-model="notes" maxlength="1000" rows="3" placeholder="今天的进展、下次需要留意的事…"/></label><p v-if="error" role="alert" class="error">{{error}}</p><button class="primary" type="submit">{{existing?'更新反馈':'保存反馈'}}</button><p v-if="saved" role="status" class="success">反馈已保存，统计已更新。</p></form></section></template>

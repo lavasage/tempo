@@ -1,0 +1,22 @@
+node_modules/
+dist/
+package/
+npm.tgz
+.env*
+
+test-results/
+playwright-report/
+
+.workbuddy/
+
+# Android 本机配置与签名（不入库，换机器需重新配置）
+android/local.properties
+android/keystore.properties
+android/*.keystore
+android/.gradle/
+android/app/build/
+android/capacitor-cordova-android-plugins/
+
+# 构建产物
+*.apk
+*.aab

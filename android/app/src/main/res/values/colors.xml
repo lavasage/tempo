@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 与 Web 端的 Design Token 保持一致；ic_launcher_background 只在
+         values/ic_launcher_background.xml 里定义，这里不要重复，否则资源冲突 -->
+    <color name="colorPrimary">#20252C</color>
+    <color name="colorPrimaryDark">#141A20</color>
+    <color name="colorAccent">#D5FA45</color>
+    <color name="canvas">#F3F5F8</color>
+    <color name="statusBar">#F3F5F8</color>
+</resources>
