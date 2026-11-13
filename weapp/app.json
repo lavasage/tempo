@@ -1,0 +1,31 @@
+{
+  "pages": [
+    "pages/schedule/index",
+    "pages/students/index",
+    "pages/my/index",
+    "pages/editor/index",
+    "pages/student/index",
+    "pages/student-form/index",
+    "pages/login/index"
+  ],
+  "window": {
+    "navigationStyle": "custom",
+    "backgroundColor": "#f3f5f8",
+    "backgroundTextStyle": "dark",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "color": "#727c8a",
+    "selectedColor": "#1b2027",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/schedule/index", "text": "课表" },
+      { "pagePath": "pages/students/index", "text": "学员" },
+      { "pagePath": "pages/my/index", "text": "我的" }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

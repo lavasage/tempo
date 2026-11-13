@@ -1,0 +1,283 @@
+.summary {
+  display: flex;
+  margin-top: 20rpx;
+  padding: 22rpx 0;
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 28rpx;
+}
+
+.sum-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+  border-right: 2rpx solid var(--line);
+}
+
+.sum-cell:last-child {
+  border-right: 0;
+}
+
+.sum-v {
+  font-size: 34rpx;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.sum-k {
+  font-size: 21rpx;
+  color: var(--ink-3);
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  margin-top: 20rpx;
+  padding: 20rpx 24rpx;
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 24rpx;
+}
+
+.acc-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 999rpx;
+  flex: none;
+}
+
+.acc-avatar.plain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--ink-2);
+  background: var(--surface-sunken);
+}
+
+.acc-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+}
+
+.acc-name {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+/* 授课记录 */
+.rec-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.ranges .seg-item {
+  font-size: 23rpx;
+  min-height: 44px;
+}
+
+.empty-box {
+  margin-top: 20rpx;
+  padding: 48rpx 24rpx;
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 24rpx;
+}
+
+.empty-link {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 6rpx;
+  margin-top: 12rpx;
+  min-height: 44px;
+  font-size: 27rpx;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx 28rpx;
+  margin-top: 22rpx;
+}
+
+.fact {
+  font-size: 25rpx;
+  color: var(--ink-3);
+}
+
+.fact-b {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.meta {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 23rpx;
+  line-height: 1.6;
+  color: var(--ink-3);
+}
+
+.pending-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20rpx;
+  padding: 0 24rpx;
+  min-height: 96rpx;
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 22rpx;
+}
+
+.pending-toggle.on {
+  border-color: var(--line-strong);
+  background: var(--surface);
+}
+
+.pt-left {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 27rpx;
+  font-weight: 600;
+}
+
+.pt-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40rpx;
+  height: 40rpx;
+  padding: 0 10rpx;
+  box-sizing: border-box;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: var(--lime-ink);
+  background: var(--lime);
+  border-radius: 999rpx;
+}
+
+.pt-right {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 23rpx;
+  color: var(--ink-3);
+}
+
+.list-title {
+  margin: 28rpx 0 10rpx;
+  font-size: 24rpx;
+  color: var(--ink-3);
+}
+
+.records {
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.rec {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  min-height: 104rpx;
+  padding: 16rpx 24rpx;
+  box-sizing: border-box;
+}
+
+.rec + .rec {
+  border-top: 2rpx solid var(--line);
+}
+
+.rec-day {
+  width: 132rpx;
+  flex: none;
+  font-size: 22rpx;
+  color: var(--ink-3);
+}
+
+.rec-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+}
+
+.rec-name {
+  font-size: 27rpx;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rec-status {
+  font-size: 22rpx;
+  color: var(--ink-3);
+  line-height: 1.4;
+}
+
+.rec-status.scored {
+  color: var(--success);
+}
+
+.rec-status.logged {
+  color: var(--warning);
+}
+
+.all-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16rpx;
+  padding: 0 24rpx;
+  min-height: 96rpx;
+  font-size: 25rpx;
+  color: var(--ink-2);
+  border-top: 2rpx solid var(--line);
+}
+
+.all-right {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  color: var(--ink-3);
+}
+
+.chev.up {
+  transform: rotate(-135deg);
+}
+
+.reset {
+  margin-top: 56rpx;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25rpx;
+  color: var(--ink-3);
+}
+
+.reset-note {
+  display: block;
+  margin-top: 10rpx;
+  text-align: center;
+  line-height: 1.6;
+}

@@ -1,0 +1,201 @@
+<view class="page">
+  <topbar title="课表" sub="{{monthTitle}}"></topbar>
+
+  <view class="pad">
+    <!-- 今日概览：今日节数 / 下一节 / 待处理 -->
+    <view class="ov">
+      <view class="ov-cell" bindtap="goToday">
+        <text class="ov-k">今日</text>
+        <text class="ov-v num">{{overview.todayCount}}<text class="ov-u"> 节</text></text>
+      </view>
+      <view class="ov-next" bindtap="openNext">
+        <text class="ov-k">{{overview.next ? (overview.next.ongoing ? '进行中' : '下一节') : '接下来'}}</text>
+        <view wx:if="{{overview.next}}" class="ov-line">
+          <text class="ov-time num">{{overview.next.time}}</text>
+          <text class="ov-name">{{overview.next.name}}</text>
+        </view>
+        <text wx:else class="ov-empty">暂无后续预约</text>
+      </view>
+      <view class="ov-task {{overview.taskCount ? 'has' : ''}}" bindtap="openTasks">
+        <text class="ov-k">待处理</text>
+        <text class="ov-v num">{{overview.taskCount}}</text>
+      </view>
+    </view>
+
+    <!-- 视图切换 -->
+    <view class="seg views">
+      <view class="seg-item {{mode === 'day' ? 'on' : ''}}" data-mode="day" bindtap="setMode">日</view>
+      <view class="seg-item {{mode === 'week' ? 'on' : ''}}" data-mode="week" bindtap="setMode">周</view>
+      <view class="seg-item {{mode === 'month' ? 'on' : ''}}" data-mode="month" bindtap="setMode">月</view>
+    </view>
+
+    <!-- 日期导航 -->
+    <view class="datenav">
+      <view class="navbtn" data-step="-1" bindtap="move" aria-role="button" aria-label="上一页">
+        <view class="nav-i left"></view>
+      </view>
+      <picker wx:if="{{mode === 'month'}}" mode="date" fields="month" value="{{day.slice(0, 7)}}" bindchange="pickMonth">
+        <view class="datepick">{{caption}}</view>
+      </picker>
+      <picker wx:else mode="date" value="{{day}}" bindchange="pickDate">
+        <view class="datepick">{{caption}}</view>
+      </picker>
+      <view class="navbtn" data-step="1" bindtap="move" aria-role="button" aria-label="下一页">
+        <view class="nav-i right"></view>
+      </view>
+      <view class="today-btn {{isToday ? 'off' : ''}}" bindtap="goToday">今天</view>
+    </view>
+
+    <!-- 当天计数 -->
+    <view wx:if="{{mode === 'day' && !isToday}}" class="counts">
+      <text class="count-item">{{count}} 节课程</text>
+      <text wx:if="{{pendingCount}}" class="count-item warn">{{pendingCount}} 待确认</text>
+      <text wx:if="{{completedCount}}" class="count-item done">{{completedCount}} 已完成</text>
+    </view>
+
+    <!-- 需要调整的课程 -->
+    <view wx:if="{{mode === 'day' && anomalyCount}}" class="alert">
+      <view class="alert-h">{{anomalyCount}} 节课程需调整</view>
+      <view wx:for="{{anomalies}}" wx:key="id" class="alert-row" data-id="{{item.id}}" bindtap="openBooking">
+        <text class="alert-main">{{item.time}} · {{item.name}}</text>
+        <text class="alert-reason">{{item.reason}}</text>
+      </view>
+    </view>
+
+    <!-- 日视图时间轴 -->
+    <view wx:if="{{mode === 'day'}}" class="board" style="height:{{boardH}}rpx">
+      <view class="gutter">
+        <view wx:for="{{hours}}" wx:key="label" class="hour" style="top:{{item.top}}rpx">{{item.label}}</view>
+      </view>
+      <view class="lanes">
+        <view wx:for="{{bands}}" wx:key="id" class="band" style="top:{{item.top}}rpx;height:{{item.height}}rpx"></view>
+        <view
+          wx:for="{{events}}"
+          wx:key="id"
+          class="event"
+          data-id="{{item.id}}"
+          bindtap="openBooking"
+          style="top:{{item.top}}rpx;height:{{item.height}}rpx;left:{{item.left}}%;width:{{item.width}}%;background:{{item.bg}};color:{{item.ink}}"
+        >
+          <view class="ev-top">
+            <text class="ev-time num">{{item.time}}</text>
+            <text wx:if="{{item.pending}}" class="ev-tag">待确认</text>
+          </view>
+          <text class="ev-name">{{item.name}}</text>
+          <text class="ev-type">{{item.typeName}}</text>
+        </view>
+        <view wx:if="{{showNow}}" class="nowline" style="top:{{nowTop}}rpx">
+          <view class="nowdot"></view>
+        </view>
+        <view wx:if="{{!events.length}}" class="board-empty">
+          <text class="board-empty-t">今天还没有课程</text>
+          <text class="caption">右下角「＋」排一节课</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 周视图 -->
+    <view wx:elif="{{mode === 'week'}}" class="week">
+      <view class="week-head">
+        <view class="week-gutter"></view>
+        <view
+          wx:for="{{columns}}"
+          wx:key="day"
+          class="week-day {{item.selected ? 'sel' : ''}}"
+          data-day="{{item.day}}"
+          bindtap="openDay"
+        >
+          <text class="wd-label">{{item.weekday}}</text>
+          <text class="wd-num num {{item.today ? 'today' : ''}}">{{item.num}}</text>
+          <text class="wd-count">{{item.count}} 节</text>
+        </view>
+      </view>
+      <view class="board" style="height:{{boardH}}rpx">
+        <view class="gutter">
+          <view wx:for="{{hours}}" wx:key="label" class="hour" style="top:{{item.top}}rpx">{{item.label}}</view>
+        </view>
+        <view class="week-cols">
+          <view wx:for="{{columns}}" wx:key="day" class="week-col">
+            <view
+              wx:for="{{item.events}}"
+              wx:for-item="ev"
+              wx:key="id"
+              class="wevent"
+              data-id="{{ev.id}}"
+              bindtap="openBooking"
+              style="top:{{ev.top}}rpx;height:{{ev.height}}rpx;background:{{ev.bg}};color:{{ev.ink}}"
+            >
+              <text class="wevent-t num">{{ev.time}}</text>
+              <text class="wevent-n">{{ev.short}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 月视图 -->
+    <view wx:else class="month">
+      <view class="month-week">
+        <text wx:for="{{monthWeekdays}}" wx:key="*this" class="mw-item">{{item}}</text>
+      </view>
+      <view class="month-grid">
+        <view
+          wx:for="{{monthCells}}"
+          wx:key="day"
+          class="cell {{item.outside ? 'outside' : ''}} {{item.today ? 'today' : ''}} {{item.selected ? 'sel' : ''}}"
+          data-day="{{item.day}}"
+          bindtap="openDay"
+        >
+          <text class="cell-num num">{{item.num}}</text>
+          <text wx:if="{{item.count}}" class="cell-count">{{item.count}} 节</text>
+          <view class="dots">
+            <view wx:for="{{item.dots}}" wx:for-item="dot" wx:key="id" class="dot" style="background:{{dot.ink}}"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 已取消 -->
+    <view wx:if="{{mode === 'day' && cancelled.length}}" class="cancelled">
+      <view class="cancelled-h" bindtap="toggleCancelled">
+        <text>已取消 · {{cancelled.length}}</text>
+        <view class="chev {{cancelledOpen ? 'up' : ''}}"></view>
+      </view>
+      <view wx:if="{{cancelledOpen}}">
+        <view wx:for="{{cancelled}}" wx:key="id" class="cancelled-row" data-id="{{item.id}}" bindtap="openBooking">
+          <text>{{item.time}} · {{item.name}}</text>
+          <text class="pill">已取消</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="fab" bindtap="create" aria-role="button" aria-label="排课">
+    <text class="fab-plus">＋</text>
+  </view>
+
+  <!-- 待处理清单 -->
+  <view wx:if="{{tasksOpen}}" class="mask" bindtap="closeTasks"></view>
+  <view wx:if="{{tasksOpen}}" class="sheet">
+    <view class="sheet-head">
+      <view>
+        <view class="title-m">待处理 · {{tasks.length}}</view>
+        <view class="caption">冲突、待确认、待记录完成</view>
+      </view>
+      <view class="btn quiet" bindtap="closeTasks">关闭</view>
+    </view>
+    <scroll-view scroll-y class="sheet-body">
+      <view wx:if="{{!tasks.length}}" class="empty">
+        <text class="empty-title">已处理完毕</text>
+      </view>
+      <view wx:for="{{tasks}}" wx:key="id" class="task-row" data-id="{{item.id}}" bindtap="openBooking">
+        <view class="task-body">
+          <text class="task-name">{{item.name}}</text>
+          <text class="caption">{{item.when}}</text>
+        </view>
+        <text class="task-reason {{item.kind === 'conflict' ? 'warn' : ''}}">{{item.reason}}</text>
+        <view class="chev"></view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

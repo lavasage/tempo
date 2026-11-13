@@ -328,6 +328,20 @@ describe('M4 关联与业务约束', () => {
       db.query(`insert into public.training_reviews (booking_id,coach_id,rating,actual_minutes) values ($1,$2,6,55)`, [booking.id, COACH_A]),
       'rating'
     );
+    // 0008：允许「有训练日志但不评分」，未评分不等于未记录；空记录仍然拒绝。
+    const logged = await createBooking(db, a.studentId, a.typeId, '2026-11-12T11:00:00+08:00', '2026-11-12T12:00:00+08:00');
+    await setStatus(String(logged.id), 'completed');
+    const row = await db.query<{ rating: number | null }>(
+      `insert into public.training_reviews (booking_id,coach_id,rating,actual_minutes,notes) values ($1,$2,null,45,'只记时长') returning rating`,
+      [logged.id, COACH_A]
+    );
+    expect(row.rows[0]!.rating).toBe(null);
+    const blank = await createBooking(db, a.studentId, a.typeId, '2026-11-12T13:00:00+08:00', '2026-11-12T14:00:00+08:00');
+    await setStatus(String(blank.id), 'completed');
+    await expectReject(
+      db.query(`insert into public.training_reviews (booking_id,coach_id) values ($1,$2)`, [blank.id, COACH_A]),
+      'content'
+    );
   });
 
   it('课时：一课只扣一次，退款需先有扣减且只退一次', async () => {

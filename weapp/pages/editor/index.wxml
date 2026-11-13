@@ -1,0 +1,169 @@
+<view class="page">
+  <topbar title="{{title}}" back compact></topbar>
+
+  <view class="pad">
+    <!-- 状态与时间 -->
+    <view class="statusbar">
+      <view class="tag {{status}}">{{statusLabel}}</view>
+      <text class="when">{{dateLabel}} {{weekday}} · {{start}}–{{endTime}}</text>
+    </view>
+
+    <!-- 表单 -->
+    <view class="form">
+      <picker range="{{studentNames}}" value="{{studentIndex}}" bindchange="onStudent" disabled="{{locked}}">
+        <view class="frow">
+          <text class="fk">学员</text>
+          <view class="fv {{hasStudents ? '' : 'hint'}}"><text class="fv-t">{{studentNames[studentIndex]}}</text><view wx:if="{{!locked}}" class="chev"></view></view>
+        </view>
+      </picker>
+
+      <picker range="{{typeNames}}" value="{{typeIndex}}" bindchange="onType" disabled="{{locked}}">
+        <view class="frow">
+          <text class="fk">课程类型</text>
+          <view class="fv"><text class="type-dot" style="background:{{typeBg}};color:{{typeInk}}">{{typeName}}</text><view wx:if="{{!locked}}" class="chev"></view></view>
+        </view>
+      </picker>
+
+      <picker mode="date" value="{{date}}" bindchange="onDate" disabled="{{locked}}">
+        <view class="frow">
+          <text class="fk">日期</text>
+          <view class="fv"><text class="fv-t">{{dateLabel}} {{weekday}}</text><view wx:if="{{!locked}}" class="chev"></view></view>
+        </view>
+      </picker>
+
+      <picker mode="time" value="{{start}}" bindchange="onStart" disabled="{{locked}}">
+        <view class="frow">
+          <text class="fk">开始</text>
+          <view class="fv num"><text class="fv-t">{{start}} – {{endTime}}</text><view wx:if="{{!locked}}" class="chev"></view></view>
+        </view>
+      </picker>
+
+      <view wx:if="{{!locked}}" class="fblock">
+        <text class="fk">时长</text>
+        <view class="chips">
+          <view
+            wx:for="{{durationOptions}}"
+            wx:key="n"
+            class="chip {{item.on ? 'on' : ''}}"
+            data-n="{{item.n}}"
+            bindtap="onDuration"
+          >{{item.n}} 分钟</view>
+        </view>
+      </view>
+
+      <picker range="{{packageNames}}" value="{{packageIndex}}" bindchange="onPackage" disabled="{{locked}}">
+        <view class="frow">
+          <text class="fk">套餐课时</text>
+          <view class="fv"><text class="fv-t">{{packageNames[packageIndex]}}</text><view wx:if="{{!locked}}" class="chev"></view></view>
+        </view>
+      </picker>
+      <view wx:if="{{packageHint}}" class="hint-line">{{packageHint}}</view>
+
+      <view wx:if="{{!locked}}" class="fblock">
+        <text class="fk">备注</text>
+        <textarea class="field-textarea" value="{{notes}}" bindinput="onNotes" maxlength="1000" placeholder="这节课要关注什么" placeholder-class="ph" />
+      </view>
+      <view wx:else class="fblock">
+        <text class="fk">备注</text>
+        <text class="body">{{notes || '无'}}</text>
+      </view>
+    </view>
+
+    <!-- 冲突提示 -->
+    <view wx:if="{{conflict}}" class="conflict">
+      <text class="conflict-t">{{conflict}}</text>
+      <view wx:if="{{alternatives.length}}" class="chips">
+        <view wx:for="{{alternatives}}" wx:key="*this" class="chip solid" data-t="{{item}}" bindtap="onAlt">{{item}}</view>
+      </view>
+      <text wx:if="{{alternatives.length}}" class="caption">点时间可直接换成可约的时段</text>
+    </view>
+
+    <!-- 保存 -->
+    <view wx:if="{{!locked}}" class="actions">
+      <view class="btn primary block {{canSave ? '' : 'is-disabled'}}" bindtap="save">{{mode === 'view' ? '保存修改' : '排好这节课'}}</view>
+    </view>
+
+    <!-- 状态操作 -->
+    <view wx:if="{{mode === 'view' && !locked}}" class="status-actions">
+      <view wx:if="{{status === 'pending'}}" class="btn graphite block" data-status="confirmed" bindtap="changeStatus">确认预约</view>
+      <view wx:if="{{status === 'confirmed'}}" class="btn graphite block" data-status="completed" bindtap="changeStatus">标记完成{{hasPackage ? '（扣 1 节）' : ''}}</view>
+      <view class="btn danger block" data-status="cancelled" bindtap="changeStatus">取消课程</view>
+    </view>
+
+    <!-- 扣课 -->
+    <view wx:if="{{hasPackage}}" class="section">
+      <view class="section-head"><text class="title-m">课时</text></view>
+      <view class="card ledger">
+        <view class="ledger-row">
+          <text class="ledger-k">{{packageName}}</text>
+          <text class="ledger-v num">剩余 {{packageBalance}} 节</text>
+        </view>
+        <view class="ledger-row">
+          <text class="ledger-k">{{refunded ? '已撤销扣课' : '已完成扣 1 节'}}</text>
+          <text wx:if="{{refunded}}" class="caption">{{refundReason}}</text>
+        </view>
+        <view wx:if="{{!refunded}}" class="ledger-act">
+          <view class="btn quiet" bindtap="revertLesson">撤销这次扣课</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 课后记录 -->
+    <view wx:if="{{mode === 'view' && status === 'completed'}}" class="section">
+      <view class="section-head">
+        <text class="title-m">课后记录</text>
+        <text class="caption">{{review.has ? '已记录，可继续补充' : '可只填一项'}}</text>
+      </view>
+
+      <view class="card review">
+        <view class="rblock">
+          <view class="rhead">
+            <text class="fk">训练表现</text>
+            <view wx:if="{{review.rating}}" class="btn quiet mini" bindtap="clearRating">清除</view>
+          </view>
+          <view class="stars">
+            <view
+              wx:for="{{[1,2,3,4,5]}}"
+              wx:key="*this"
+              class="star {{review.rating === item ? 'on' : ''}}"
+              data-n="{{item}}"
+              bindtap="setRating"
+            >{{item}}</view>
+          </view>
+        </view>
+
+        <view class="rblock">
+          <text class="fk">训练时长（分钟）</text>
+          <view class="inline">
+            <input class="mini-input num" type="number" value="{{review.minutes}}" bindinput="onMinutes" placeholder="未记录" placeholder-class="ph" />
+            <view class="chip" data-n="45" bindtap="quickMinutes">45</view>
+            <view class="chip" data-n="60" bindtap="quickMinutes">60</view>
+            <view class="chip" data-n="90" bindtap="quickMinutes">90</view>
+          </view>
+          <text class="caption">只填这里也算「有记录」，不会当成 0 分钟。</text>
+        </view>
+
+        <view class="rblock">
+          <text class="fk">用力程度（1–10）</text>
+          <view class="inline">
+            <view class="step" bindtap="effortMinus">−</view>
+            <text class="step-val num">{{review.effort === null ? '未填' : review.effort}}</text>
+            <view class="step" bindtap="effortPlus">＋</view>
+            <view wx:if="{{review.effort !== null}}" class="btn quiet mini" bindtap="clearEffort">清除</view>
+          </view>
+        </view>
+
+        <view class="rblock">
+          <text class="fk">文字记录</text>
+          <textarea class="field-textarea" value="{{review.notes}}" bindinput="onReviewNotes" maxlength="1000" placeholder="动作、状态、下次注意" placeholder-class="ph" />
+        </view>
+
+        <view class="btn primary block" bindtap="saveReview">{{review.has ? '更新记录' : '保存记录'}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{status === 'cancelled'}}" class="closed">
+      <text class="caption">这节课已取消，记录仍保留在课表中。</text>
+    </view>
+  </view>
+</view>

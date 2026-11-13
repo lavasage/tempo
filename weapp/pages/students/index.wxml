@@ -1,0 +1,45 @@
+<view class="page">
+  <topbar title="学员" sub="{{total}} 位学员"></topbar>
+
+  <view class="pad">
+    <view class="search">
+      <view class="search-i"></view>
+      <input
+        class="search-input"
+        value="{{search}}"
+        bindinput="onSearch"
+        placeholder="搜索姓名或手机号"
+        placeholder-class="ph"
+        confirm-type="search"
+      />
+      <view wx:if="{{search}}" class="btn quiet mini" bindtap="clearSearch">清除</view>
+    </view>
+
+    <view wx:if="{{empty}}" class="empty">
+      <view class="empty-title">{{search ? '没有匹配的学员' : '还没有学员'}}</view>
+      <text class="caption">点右下角「＋」添加</text>
+    </view>
+
+    <view wx:else class="list">
+      <view wx:for="{{rows}}" wx:key="id" class="student" data-id="{{item.id}}" bindtap="open">
+        <view class="avatar" style="background:{{item.bg}};color:{{item.ink}}">{{item.initial}}</view>
+        <view class="s-main">
+          <view class="s-top">
+            <text class="s-name">{{item.name}}</text>
+          </view>
+          <text class="s-sub">{{item.goal}}</text>
+          <text class="s-meta">{{item.meta}}</text>
+        </view>
+        <view wx:if="{{item.active}}" class="s-count">
+          <text class="s-count-v num">{{item.active}}</text>
+          <text class="s-count-k">待上</text>
+        </view>
+        <view class="chev"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="fab" bindtap="create" aria-role="button" aria-label="新增学员">
+    <text class="fab-plus">＋</text>
+  </view>
+</view>

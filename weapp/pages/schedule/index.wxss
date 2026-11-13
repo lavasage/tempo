@@ -1,0 +1,568 @@
+/* 今日概览 */
+.ov {
+  display: flex;
+  align-items: stretch;
+  margin-top: 20rpx;
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 28rpx;
+  overflow: hidden;
+}
+
+.ov-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6rpx;
+  padding: 20rpx 24rpx;
+}
+
+.ov-k {
+  font-size: 22rpx;
+  color: var(--ink-3);
+  letter-spacing: 0.4rpx;
+}
+
+.ov-v {
+  font-size: 38rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ov-u {
+  font-size: 22rpx;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.ov-next {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6rpx;
+  padding: 20rpx 20rpx;
+  border-left: 2rpx solid var(--line);
+}
+
+.ov-line {
+  display: flex;
+  align-items: baseline;
+  gap: 10rpx;
+  min-width: 0;
+}
+
+.ov-time {
+  font-size: 30rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ov-name {
+  font-size: 26rpx;
+  color: var(--ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ov-empty {
+  font-size: 24rpx;
+  color: var(--ink-3);
+}
+
+.ov-task {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6rpx;
+  width: 128rpx;
+  border-left: 2rpx solid var(--line);
+}
+
+.ov-task .ov-v {
+  font-size: 30rpx;
+}
+
+.ov-task.has .ov-v {
+  color: var(--ink);
+  background: var(--lime);
+  min-width: 44rpx;
+  height: 44rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10rpx;
+  box-sizing: border-box;
+}
+
+/* 视图切换与日期导航 */
+.views {
+  margin-top: 32rpx;
+}
+
+.datenav {
+  display: flex;
+  align-items: center;
+  margin-top: 16rpx;
+  padding: 6rpx 8rpx;
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 24rpx;
+}
+
+.navbtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72rpx;
+  height: 72rpx;
+  flex: none;
+}
+
+.nav-i {
+  width: 16rpx;
+  height: 16rpx;
+  border-left: 3rpx solid var(--ink-2);
+  border-bottom: 3rpx solid var(--ink-2);
+}
+
+.nav-i.left {
+  transform: rotate(45deg);
+}
+
+.nav-i.right {
+  transform: rotate(-135deg);
+}
+
+.datepick {
+  flex: 1;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 600;
+  min-height: 72rpx;
+  line-height: 72rpx;
+}
+
+.today-btn {
+  flex: none;
+  margin-left: 4rpx;
+  height: 64rpx;
+  padding: 0 20rpx;
+  line-height: 64rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--lime-ink);
+  background: var(--lime);
+  border-radius: 999rpx;
+}
+
+.today-btn.off {
+  color: var(--ink-3);
+  background: var(--surface-sunken);
+}
+
+.counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+  margin-top: 18rpx;
+  font-size: 24rpx;
+  color: var(--ink-3);
+}
+
+.count-item.warn {
+  color: var(--warning);
+}
+
+.count-item.done {
+  color: var(--success);
+}
+
+/* 需调整提示 */
+.alert {
+  margin-top: 18rpx;
+  padding: 18rpx 20rpx;
+  background: var(--warning-soft);
+  border-radius: 20rpx;
+}
+
+.alert-h {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--warning);
+}
+
+.alert-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+  padding: 10rpx 0 0;
+}
+
+.alert-main {
+  font-size: 24rpx;
+  color: var(--ink);
+}
+
+.alert-reason {
+  font-size: 22rpx;
+  color: var(--ink-2);
+}
+
+/* 时间轴 */
+.board {
+  display: flex;
+  position: relative;
+  margin-top: 34rpx;
+}
+
+.gutter {
+  position: relative;
+  width: 88rpx;
+  flex: none;
+}
+
+.hour {
+  position: absolute;
+  left: 0;
+  width: 84rpx;
+  transform: translateY(-50%);
+  font-size: 20rpx;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.lanes {
+  flex: 1;
+  position: relative;
+  border-left: 2rpx solid var(--line);
+}
+
+.band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: rgba(114, 124, 138, 0.05);
+}
+
+.event {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 10rpx 14rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.ev-top {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10rpx;
+}
+
+.ev-time {
+  font-size: 21rpx;
+  font-weight: 700;
+  letter-spacing: 0.2rpx;
+}
+
+.ev-tag {
+  font-size: 17rpx;
+  padding: 2rpx 8rpx;
+  border-radius: 6rpx;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.ev-name {
+  margin-top: 4rpx;
+  font-size: 27rpx;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ev-type {
+  margin-top: 2rpx;
+  font-size: 21rpx;
+  opacity: 0.78;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nowline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2rpx;
+  background: var(--danger);
+}
+
+.nowdot {
+  position: absolute;
+  left: -5rpx;
+  top: -5rpx;
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 999rpx;
+  background: var(--danger);
+}
+
+.board-empty {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 22%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.board-empty-t {
+  font-size: 26rpx;
+  color: var(--ink-2);
+}
+
+/* 周视图 */
+.week-head {
+  display: flex;
+  margin-top: 18rpx;
+  padding-left: 88rpx;
+}
+
+.week-gutter {
+  display: none;
+}
+
+.week-day {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+  padding: 6rpx 0;
+  border-radius: 14rpx;
+}
+
+.week-day.sel {
+  background: var(--surface);
+}
+
+.wd-label {
+  font-size: 20rpx;
+  color: var(--ink-3);
+}
+
+.wd-num {
+  font-size: 27rpx;
+  font-weight: 700;
+  width: 44rpx;
+  height: 44rpx;
+  line-height: 44rpx;
+  text-align: center;
+  border-radius: 999rpx;
+}
+
+.wd-num.today {
+  color: var(--lime-ink);
+  background: var(--lime);
+}
+
+.wd-count {
+  font-size: 17rpx;
+  color: var(--ink-3);
+}
+
+.week-cols {
+  flex: 1;
+  display: flex;
+}
+
+.week-col {
+  flex: 1;
+  position: relative;
+  border-left: 2rpx solid var(--line);
+}
+
+.wevent {
+  position: absolute;
+  left: 3rpx;
+  right: 3rpx;
+  padding: 4rpx 6rpx;
+  border-radius: 10rpx;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.wevent-t {
+  display: block;
+  font-size: 17rpx;
+  font-weight: 700;
+}
+
+.wevent-n {
+  display: block;
+  font-size: 18rpx;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 月视图 */
+.month {
+  margin-top: 20rpx;
+  padding: 12rpx 10rpx 18rpx;
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 28rpx;
+}
+
+.month-week {
+  display: flex;
+  padding: 10rpx 0;
+}
+
+.mw-item {
+  flex: 1;
+  text-align: center;
+  font-size: 20rpx;
+  color: var(--ink-3);
+}
+
+.month-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.cell {
+  width: 14.2857%;
+  height: 112rpx;
+  box-sizing: border-box;
+  padding-top: 10rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rpx;
+  border-radius: 14rpx;
+}
+
+.cell.sel {
+  background: var(--surface-sunken);
+}
+
+.cell-num {
+  font-size: 25rpx;
+  font-weight: 600;
+  width: 42rpx;
+  height: 42rpx;
+  line-height: 42rpx;
+  text-align: center;
+  border-radius: 999rpx;
+}
+
+.cell.outside .cell-num {
+  color: #b9c0cc;
+}
+
+.cell.today .cell-num {
+  color: var(--lime-ink);
+  background: var(--lime);
+}
+
+.cell-count {
+  font-size: 16rpx;
+  color: var(--ink-3);
+}
+
+.dots {
+  display: flex;
+  gap: 4rpx;
+  height: 10rpx;
+  align-items: center;
+}
+
+.dot {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 999rpx;
+}
+
+/* 已取消 */
+.cancelled {
+  margin-top: 40rpx;
+  border-top: 2rpx solid var(--line);
+}
+
+.cancelled-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 92rpx;
+  font-size: 24rpx;
+  color: var(--ink-3);
+}
+
+.cancelled-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 92rpx;
+  font-size: 26rpx;
+  color: var(--ink-3);
+}
+
+.chev {
+  transition: transform 0.2s;
+}
+
+.chev.up {
+  transform: rotate(-135deg);
+}
+
+/* 待处理清单 */
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  min-height: 108rpx;
+  border-bottom: 2rpx solid var(--line);
+}
+
+.task-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+}
+
+.task-name {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.task-reason {
+  font-size: 22rpx;
+  color: var(--ink-3);
+  max-width: 240rpx;
+  text-align: right;
+}
+
+.task-reason.warn {
+  color: var(--warning);
+}
+
+/* 浮动按钮会盖住右下角，给页面留出滚动余量 */
+.page {
+  padding-bottom: calc(180rpx + env(safe-area-inset-bottom));
+}

@@ -19,7 +19,7 @@ test('清空时间不崩溃，未来完成受阻，反馈返回有保护',async(
  await page.getByRole('radio',{name:'4 表现良好'}).check();
  page.once('dialog',d=>d.dismiss());await page.getByRole('button',{name:'返回',exact:true}).click();
  await expect(page.getByRole('radio',{name:'4 表现良好'})).toBeChecked();
- await page.getByRole('button',{name:'保存反馈',exact:true}).click();
+ await page.getByRole('button',{name:'保存记录',exact:true}).click();
  await page.getByRole('button',{name:'返回',exact:true}).click();
  await expect(page.locator('.drawer')).toHaveCount(0);expect(errors).toEqual([]);
 });

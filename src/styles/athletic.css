@@ -1,17 +1,15 @@
 :root{--r-page:10px;--r-card:8px;--r-lg:8px;--r-md:6px;--r-sm:4px}
-.calendar-heading,.students-header,.coach-header{padding:12px 0 16px;border-bottom:2px solid var(--graphite);margin-bottom:8px!important;align-items:center}
+.calendar-heading,.students-header,.coach-header{padding:8px 0 12px;border-bottom:0;margin-bottom:8px!important;align-items:center}
 .calendar-heading h1,.students-header h1,.coach-header h1{font-weight:800;letter-spacing:-.03em;font-size:27px}
 .calendar-heading>div:first-child{display:flex;align-items:baseline;gap:12px}.calendar-heading .calendar-month{font-size:12px;color:var(--ink-3)}
-.calendar-heading h1:after{content:'';display:inline-block;width:7px;height:19px;transform:skew(-16deg);background:var(--brand-lime);margin-left:10px}
 .primary{box-shadow:none!important;border-radius:6px!important}
 .schedule-board,.month-board,.calendar-date-nav,.segmented,.profile-pane,.student-editor,.settings-row{border-radius:6px!important;box-shadow:none!important}
-.nav a{border-radius:6px!important}.stats-grid>div{border-radius:4px;box-shadow:none}
+.nav a{border-radius:6px!important}
 .coach-header{display:flex;justify-content:space-between}.coach-header p{font-size:13px;margin:8px 0 0;color:var(--ink-3)}
 .coach-monogram{display:grid;place-items:center;width:48px;height:48px;background:var(--graphite);color:var(--brand-lime);font-size:26px;font-weight:800;transform:skew(-5deg)}
 .workload{display:grid;grid-template-columns:repeat(3,1fr);padding:22px 0;border-bottom:1px solid var(--line);gap:12px}.workload>div,.workload>a{display:flex;flex-direction:column;gap:8px}.workload span{font-size:12px;color:var(--ink-3)}.workload strong{font-size:30px;font-variant-numeric:tabular-nums}.workload small{font-size:12px;font-weight:400;margin-left:5px}
-.my-page .settings-row{background:none;border-bottom:1px solid var(--line);padding:12px 0;margin:8px 0 24px}
-.feedback-todo{margin-bottom:24px}.feedback-todo h2{font-size:16px}.feedback-todo>a{display:flex;justify-content:space-between;min-height:48px;align-items:center;border-bottom:1px solid var(--line);font-size:13px}
-.my-page .training-stats{border:0;padding:0;background:none;box-shadow:none}.my-page .stats-heading h2{font-size:17px}
+.my-page{max-width:720px;margin-inline:auto}
+.my-page .settings-row{background:none;border:0;padding:12px 0;margin:0;min-height:64px}
 @media(max-width:760px){
  .calendar-page .week-board{display:block;overflow:clip;border-radius:4px!important}
  .week-board .board-head,.week-board .board-body{grid-template-columns:32px repeat(7,minmax(0,1fr));min-width:0}
@@ -21,14 +19,41 @@
  .calendar-heading h1{font-size:24px}.calendar-heading>div:first-child{gap:8px}.calendar-heading .calendar-month{font-size:11px}
  .calendar-heading .icon-button{border:0;background:none}.calendar-toolbar{margin-bottom:8px}.calendar-caption{margin:8px 0}
 }
-.calendar-page .calendar-heading{background:var(--graphite);color:white;padding:14px 16px;border:0;border-radius:4px;margin-bottom:0!important;min-height:76px}
-.calendar-page .calendar-heading>div:first-child{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
-.calendar-page .calendar-heading h1{color:white;font-size:24px;line-height:1.15;letter-spacing:.02em}
+/* Root navigation shares a quiet, unboxed title and one primary action. */
+.calendar-page .calendar-heading{background:transparent;color:var(--ink);padding:4px 0 8px;border:0;margin-bottom:0!important;min-height:56px}
+.calendar-page .calendar-heading>div:first-child{display:flex;align-items:baseline;gap:10px}
+.calendar-page .calendar-heading h1{color:var(--ink);font-size:28px;line-height:1.2;letter-spacing:-.03em}
 .calendar-page .calendar-heading h1:after{display:none}
-.calendar-page .calendar-heading .calendar-month{color:#b9c0ca;font-size:11px;letter-spacing:.04em}
-.calendar-page .calendar-heading .primary{background:var(--brand-lime);color:var(--graphite);border:0;min-height:44px;padding-inline:16px}
-.calendar-page .calendar-heading .icon-button{color:#e1e6ec;background:transparent;border:0}
-.calendar-page .calendar-heading .heading-actions{gap:8px}
+.calendar-page .calendar-heading .calendar-month{color:var(--ink-2);font-size:12px}
+.calendar-page .calendar-heading .primary,.students-header>.primary{background:var(--graphite);color:white;border:0;min-height:44px;padding-inline:14px}
+.calendar-page .calendar-heading .primary svg{color:var(--brand-lime)}
+.calendar-page .calendar-heading .icon-button{color:var(--ink-2);background:transparent;border:0}
+.calendar-page .calendar-heading .heading-actions{gap:4px}
+.students-header .eyebrow{display:none}
+.coach-monogram{transform:none;border-radius:8px}
+@media(max-width:900px){
+ .sidebar{background:var(--surface);border-top:1px solid var(--line);box-shadow:none}
+ .nav a,.nav a:hover{background:transparent;color:var(--ink-2);font-size:11px;gap:4px}
+ .nav a svg,.nav a:hover svg{color:var(--ink-2);width:22px;height:22px}
+ .nav a.router-link-exact-active,.nav a.section-active{background:transparent;color:var(--ink);font-weight:700}
+ .nav a.router-link-exact-active svg,.nav a.section-active svg{color:var(--ink);background:var(--brand-lime);box-shadow:0 0 0 4px var(--brand-lime);border-radius:4px}
+}
+@media(max-width:760px){
+ .calendar-page .compact-overview{margin-bottom:0!important}
+ .schedule-hint{border-bottom:0;gap:8px}
+ .schedule-hint .task-trigger{background:transparent;border:0;box-shadow:none;color:var(--ink-2)}
+ .calendar-toolbar{margin:4px 0 0;padding:0 0 4px;gap:4px;top:env(safe-area-inset-top,0px)}
+ .calendar-toolbar .segmented{width:100%;padding:2px;background:#e7eaee}
+ .calendar-toolbar .segmented button{flex:1;min-height:44px;font-size:14px}
+ .calendar-toolbar .segmented .selected{background:var(--surface);box-shadow:none;font-weight:700}
+ .calendar-date-nav{background:transparent;border:0;padding:0;border-bottom:1px solid var(--line);border-radius:0!important}
+ .calendar-date-nav input{font-size:14px;font-weight:600;min-width:0}
+ .calendar-caption{margin:8px 0;min-height:24px}
+ .students-header,.coach-header{min-height:56px;margin-bottom:12px!important;padding:4px 0 8px}
+ .students-header h1,.coach-header h1{font-size:28px}
+ .students-page .student-row{border-radius:0;box-shadow:none;border-width:0 0 1px;background:transparent}
+ .students-page .student-list{gap:0}
+}
 @media(max-width:760px){
  .week-board .board-head{padding:4px 0}.week-board .board-head b{width:27px;height:27px;font-size:13px}.week-board .board-head small{font-size:9px}
  .week-board .time-gutter>span{right:3px;font-size:9px}
@@ -36,4 +61,72 @@
  .week-board .booking-title b{font-size:10px;line-height:1.25;white-space:normal;overflow-wrap:anywhere}
  .week-board .booking-time{font-size:8px;letter-spacing:-.03em}
  .week-board .booking-warn{display:none}
+}
+
+/* Secondary destinations: back is navigation, separate from primary form actions. */
+.subpage-navigation{display:flex;align-items:center;gap:16px;min-height:52px}
+.subpage-navigation h1{margin:0;font-size:24px;line-height:1.3}
+.back-navigation,.drawer-back,.student-back{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;min-width:44px;padding:0 10px;font-size:14px;color:var(--ink-2);border:0;background:transparent;border-radius:6px;flex-shrink:0}
+.back-navigation:hover,.drawer-back:hover,.student-back:hover{background:var(--surface-sunken);color:var(--ink)}
+.back-navigation:focus-visible{outline:2px solid var(--brand-blue);outline-offset:2px}
+.availability-title-group{min-width:0}
+.availability-header{align-items:center}
+.availability-header .availability-lead{font-size:12px;margin:8px 0 0}
+@media(max-width:760px){
+ .subpage-navigation{gap:10px}
+ .subpage-navigation h1{font-size:22px}
+ .availability-form input{font-size:16px;min-height:44px}
+ .availability-add,.availability-remove,.availability-buffer select{min-height:44px}
+ .availability-remove{width:44px;min-width:44px}
+ .availability-time-row{grid-template-columns:minmax(0,1fr) 10px minmax(0,1fr) 44px}
+ .availability-weekdays button{min-height:44px;height:44px}
+ .availability-save{background:var(--surface);backdrop-filter:none;box-shadow:none;border-radius:6px;bottom:env(safe-area-inset-bottom,0px)}
+}
+
+/* Layout review: secondary pages share spacing, content owns the screen. */
+.drawer-navigation{display:flex;align-items:center;gap:14px}
+.drawer-navigation .drawer-back{margin:0;padding-left:0}
+.drawer-head-main{flex:1}
+.drawer-sub{margin-top:8px;flex-wrap:wrap}
+.student-editor-page .subpage-navigation h1{font-size:24px}
+.package-empty{border:0;border-radius:0;padding:8px 0;line-height:1.6}
+@media(max-width:900px){
+ .students-page .student-unselected{display:none}
+ .students-master{background:transparent;border:0;box-shadow:none;padding:0}
+ .students-page .student-row{padding:14px 4px;min-height:76px}
+ .student-search{margin-bottom:12px}
+}
+@media(max-width:760px){
+ .student-editor{padding:0;border:0;background:transparent;gap:20px}
+ .student-editor input,.student-editor textarea{background:var(--surface)}
+ .student-editor-actions{display:grid;grid-template-columns:1fr;gap:8px;padding-top:4px}
+ .student-editor-actions .save-and-book{min-width:0}
+ .preference-options button{min-height:44px;border-radius:6px}
+ .drawer-head{background:var(--surface);padding-bottom:12px}
+ .drawer-head .drawer-sub{font-size:12px}
+ .drawer-navigation h1{font-size:22px}
+ .drawer-foot .foot-secondary button{min-height:44px;flex:1}
+ .profile-actions{gap:10px}
+ .profile-actions .primary{min-height:44px}
+ .profile-next{box-shadow:none;border-radius:6px;flex-wrap:wrap}
+ .profile-next .text{min-height:44px;padding-inline:12px;color:var(--ink);background:var(--brand-lime);border:0}
+ .profile-next-main{min-width:0;flex:1 1 160px}
+ .profile-next b{white-space:normal;line-height:1.5}
+ .my-page .workload{padding:20px 0;gap:8px}
+ .my-page .workload strong{font-size:28px}
+ .records-empty{align-items:flex-start;gap:4px;padding-block:8px}
+ .records-empty p{line-height:1.6;padding-top:10px}
+}
+/* Form groups need explicit rhythm; labels must not touch preceding controls. */
+.booking-form>fieldset{display:grid;gap:16px;min-width:0}
+@media(max-width:760px){
+ .booking-form .form-row{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:12px}
+ .booking-form .form-row input{min-width:0;padding-inline:8px}
+ .duration-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .duration-options button{min-height:44px;border-radius:6px;padding-inline:6px}
+ .alternative-times button{min-height:44px}
+ .students-page .student-row>svg{opacity:1}
+ .students-page .student-row+.student-row{border-top:1px solid var(--line)}
+ .student-row-main b{font-size:15px}
+ .student-row-main small{font-size:12px;margin-top:4px}
 }

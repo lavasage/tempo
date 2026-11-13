@@ -838,10 +838,6 @@
   border-top: 0;
 }
 
-.student-review .stats-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
 /* ---------- Empty selection ---------- */
 .student-unselected {
   display: grid;

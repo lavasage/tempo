@@ -285,8 +285,8 @@ function protectDraft(event:BeforeUnloadEvent){if(dirty.value){event.preventDefa
     <aside ref="panel" class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" tabindex="-1" :style="{'--type-bg': typeTone.bg, '--type-ink': typeTone.ink}">
       <header class="drawer-head">
         <div class="drawer-head-main">
-          <button class="text drawer-back" @click="close"><ArrowLeft :size="15" />返回</button>
-          <h1 id="drawer-title">{{ title }}</h1>
+          <div class="drawer-navigation"><button class="text drawer-back" @click="close"><ArrowLeft :size="20" />返回</button>
+          <h1 id="drawer-title">{{ title }}</h1></div>
           <div class="drawer-sub">
             <StatusBadge v-if="existing" :status="existing.status" size="md" />
             <span>{{ dateLabel }} · {{ start }}–{{ end }}</span>

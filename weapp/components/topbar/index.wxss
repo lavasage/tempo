@@ -1,0 +1,53 @@
+.topbar {
+  background: transparent;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  padding: 0 32rpx;
+}
+
+.back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rpx;
+  height: 64rpx;
+  margin-left: -16rpx;
+  margin-right: 4rpx;
+}
+
+.back-icon {
+  width: 20rpx;
+  height: 20rpx;
+  border-left: 4rpx solid var(--ink);
+  border-bottom: 4rpx solid var(--ink);
+  transform: rotate(45deg);
+}
+
+.bar-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.bar-title.compact {
+  font-size: 30rpx;
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 8rpx 32rpx 0;
+  gap: 16rpx;
+}
+
+.head-main {
+  min-width: 0;
+}
+
+.head-sub {
+  margin-top: 6rpx;
+}

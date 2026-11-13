@@ -21,7 +21,7 @@ export function decode(raw:string):Database {
  for(const b of d.bookings)if(b.package_id!==null&&!d.packages.some(p=>p.id===b.package_id))throw Error('课程关联的套餐不存在');
  for(const p of d.packages)if(p.coach_id!==d.coach.id||!d.students.some(s=>s.id===p.student_id)||typeof p.name!=='string'||!Number.isInteger(p.total_sessions)||p.total_sessions<1||p.total_sessions>500||!Number.isInteger(p.initial_used)||p.initial_used<0||p.initial_used>p.total_sessions||typeof p.purchased_on!=='string'||(p.expires_on!==null&&typeof p.expires_on!=='string'))throw Error('套餐记录损坏');
  for(const t of d.lesson_tx)if(t.coach_id!==d.coach.id||!d.packages.some(p=>p.id===t.package_id)||!['purchase','consume','refund','adjust'].includes(t.kind)||!Number.isInteger(t.quantity)||t.quantity===0||(t.booking_id!==null&&!d.bookings.some(b=>b.id===t.booking_id)))throw Error('课时流水损坏');
- for(const r of d.reviews)if(!d.bookings.some(b=>b.id===r.booking_id)||r.coach_id!==d.coach.id||!Number.isInteger(r.rating)||r.rating<1||r.rating>5||!Number.isInteger(r.actual_minutes)||r.actual_minutes<1||r.actual_minutes>600||typeof r.notes!=='string'||(r.effort!==null&&(!Number.isInteger(r.effort)||r.effort<1||r.effort>10)))throw Error('反馈记录损坏');
+ for(const r of d.reviews)if(!d.bookings.some(b=>b.id===r.booking_id)||r.coach_id!==d.coach.id||(r.rating!==null&&(!Number.isInteger(r.rating)||r.rating<1||r.rating>5))||(r.actual_minutes!==null&&(!Number.isInteger(r.actual_minutes)||r.actual_minutes<1||r.actual_minutes>600))||typeof r.notes!=='string'||(r.effort!==null&&(!Number.isInteger(r.effort)||r.effort<1||r.effort>10)))throw Error('反馈记录损坏');
  if(new Set(d.reviews.map(r=>r.booking_id)).size!==d.reviews.length)throw Error('反馈记录重复');
  return d;
 }

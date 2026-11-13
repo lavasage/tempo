@@ -1,0 +1,11 @@
+.pad {
+  padding-top: 24rpx;
+}
+
+.save {
+  margin-top: 40rpx;
+}
+
+.ph {
+  color: #a8b0bd;
+}

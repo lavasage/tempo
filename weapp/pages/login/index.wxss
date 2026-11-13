@@ -1,0 +1,105 @@
+.pad {
+  padding-top: 16rpx;
+}
+
+.hero {
+  margin-bottom: 36rpx;
+}
+
+.hero-sub {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 25rpx;
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+
+.avatar-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 36rpx;
+}
+
+.avatar-btn {
+  width: 168rpx;
+  height: 168rpx;
+  border-radius: 999rpx;
+  padding: 0;
+  background: transparent;
+  overflow: hidden;
+}
+
+.avatar-img {
+  width: 168rpx;
+  height: 168rpx;
+  border-radius: 999rpx;
+  display: block;
+}
+
+.avatar-empty {
+  width: 168rpx;
+  height: 168rpx;
+  border-radius: 999rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rpx;
+  background: var(--surface);
+  border: 2rpx dashed var(--line-strong);
+}
+
+.avatar-plus {
+  font-size: 40rpx;
+  color: var(--ink-3);
+  line-height: 1;
+}
+
+.skip {
+  margin-top: 12rpx;
+}
+
+.notice {
+  margin-top: 48rpx;
+  padding: 22rpx 24rpx;
+  background: var(--surface-sunken);
+  border-radius: 20rpx;
+}
+
+.notice-t {
+  display: block;
+  font-size: 23rpx;
+  font-weight: 600;
+  color: var(--ink-2);
+  margin-bottom: 6rpx;
+}
+
+.notice-p {
+  font-size: 22rpx;
+  line-height: 1.65;
+  color: var(--ink-3);
+}
+
+.who {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  padding: 48rpx 0;
+}
+
+.avatar-img.big,
+.avatar-empty.big {
+  width: 168rpx;
+  height: 168rpx;
+  margin-bottom: 8rpx;
+}
+
+.who-name {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.ph {
+  color: #a8b0bd;
+}

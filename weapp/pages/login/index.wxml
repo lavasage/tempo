@@ -1,0 +1,47 @@
+<view class="page">
+  <topbar title="登录" back compact></topbar>
+
+  <view class="pad">
+    <view class="hero">
+      <view class="title-xl">教练身份</view>
+      <text class="hero-sub">用微信头像和昵称作为教练身份，方便区分账号。</text>
+    </view>
+
+    <block wx:if="{{!loggedIn}}">
+      <view class="avatar-wrap">
+        <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <image wx:if="{{avatar}}" class="avatar-img" src="{{avatar}}" mode="aspectFill"></image>
+          <view wx:else class="avatar-empty">
+            <text class="avatar-plus">＋</text>
+            <text class="caption">选择头像</text>
+          </view>
+        </button>
+      </view>
+
+      <view class="field">
+        <text class="field-label">昵称</text>
+        <input class="field-input" type="nickname" value="{{nickname}}" bindinput="onNickname" placeholder="点击输入昵称" placeholder-class="ph" maxlength="20" />
+      </view>
+
+      <view class="btn primary block {{busy ? 'is-disabled' : ''}}" bindtap="signIn">{{busy ? '登录中…' : '微信登录'}}</view>
+      <view class="btn quiet block skip" bindtap="skip">暂不登录，先看看</view>
+
+      <view class="notice">
+        <text class="notice-t">关于权限</text>
+        <text class="notice-p">只读取你主动选择的头像和昵称，用于界面展示，不会上传。当前版本没有服务端，登录态保存在本机；要跨设备同步需要接后端。</text>
+      </view>
+    </block>
+
+    <block wx:else>
+      <view class="who">
+        <image wx:if="{{avatar}}" class="avatar-img big" src="{{avatar}}" mode="aspectFill"></image>
+        <view wx:else class="avatar-empty big">
+          <text class="avatar-plus">＋</text>
+        </view>
+        <text class="who-name">{{current}}</text>
+        <text class="caption">已登录 · 数据仅存本机</text>
+      </view>
+      <view class="btn danger block" bindtap="signOut">退出登录</view>
+    </block>
+  </view>
+</view>

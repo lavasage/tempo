@@ -32,6 +32,11 @@ function addWindow(kind:WindowKind){draft.value[kind].push({id:crypto.randomUUID
 function removeWindow(kind:WindowKind,id:string){draft.value[kind]=draft.value[kind].filter(r=>r.id!==id)}
 function addBlock(){const today=dateKey();blocks.value.push({id:crypto.randomUUID(),start:`${today}T12:00`,end:`${today}T13:00`,label:''})}
 function removeBlock(id:string){if(confirm('移除此不可预约时段？保存后生效。'))blocks.value=blocks.value.filter(b=>b.id!==id)}
+function back(){
+ const previous:unknown=window.history.state?.back;
+ if(typeof previous==='string'&&previous.startsWith('/')&&!previous.startsWith('//')&&previous!=='/availability')router.back();
+ else router.replace('/my');
+}
 function save(){
  try{
   const next=copy(draft.value);
@@ -54,11 +59,12 @@ onBeforeUnmount(()=>window.removeEventListener('beforeunload',beforeUnload));
 <template>
  <div class="availability-page">
   <header class="availability-header">
-   <div>
-    <span class="eyebrow"><span class="dot" aria-hidden="true" />时间设置</span>
-    <button class="text availability-back" @click="router.push('/')"><ArrowLeft :size="16" />课表</button>
-    <h1>时间设置</h1>
-    <p class="availability-lead">可约时间 = 营业时间 ∩ 工作时间 − 固定休息与临时不可预约。这些规则只影响预约校验，不会改动已有课程。</p>
+   <div class="availability-title-group">
+    <div class="subpage-navigation">
+     <button type="button" class="back-navigation" aria-label="返回上一页" @click="back"><ArrowLeft :size="20"/><span>返回</span></button>
+     <h1>时间设置</h1>
+    </div>
+    <p class="availability-lead">这些规则只影响新预约，不会改动已有课程。</p>
    </div>
    <span class="availability-zone">{{zone}}</span>
   </header>

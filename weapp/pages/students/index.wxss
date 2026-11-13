@@ -1,0 +1,136 @@
+.search {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 16rpx;
+  padding: 0 20rpx;
+  height: 88rpx;
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 22rpx;
+}
+
+.search-i {
+  width: 24rpx;
+  height: 24rpx;
+  border: 3rpx solid var(--ink-3);
+  border-radius: 999rpx;
+  flex: none;
+  position: relative;
+}
+
+.search-i::after {
+  content: "";
+  position: absolute;
+  right: -10rpx;
+  bottom: -8rpx;
+  width: 12rpx;
+  height: 3rpx;
+  background: var(--ink-3);
+  transform: rotate(45deg);
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  font-size: 27rpx;
+}
+
+.list {
+  margin-top: 24rpx;
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 28rpx;
+  overflow: hidden;
+}
+
+.student {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  min-height: 148rpx;
+  padding: 20rpx 24rpx;
+  box-sizing: border-box;
+}
+
+.student + .student {
+  border-top: 2rpx solid var(--line);
+}
+
+.avatar {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 700;
+  flex: none;
+}
+
+.s-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.s-top {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.s-name {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.s-sub {
+  display: block;
+  margin-top: 4rpx;
+  font-size: 24rpx;
+  color: var(--ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.s-meta {
+  display: block;
+  margin-top: 2rpx;
+  font-size: 22rpx;
+  color: var(--ink-3);
+}
+
+.btn.mini {
+  min-height: 44px;
+  padding: 0 18rpx;
+  font-size: 23rpx;
+}
+
+.ph {
+  color: #a8b0bd;
+}
+
+.s-count {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2rpx;
+  flex: none;
+}
+
+.s-count-v {
+  font-size: 28rpx;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.s-count-k {
+  font-size: 19rpx;
+  color: var(--ink-3);
+}
+
+.page {
+  padding-bottom: calc(180rpx + env(safe-area-inset-bottom));
+}

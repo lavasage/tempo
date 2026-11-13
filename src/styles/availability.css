@@ -21,22 +21,6 @@
   letter-spacing: -0.03em;
 }
 
-.availability-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  min-height: 28px;
-  margin: 2px 0 2px;
-  padding: 0;
-  font-size: 11.5px;
-  color: var(--ink-3);
-}
-
-.availability-back:hover {
-  color: var(--ink);
-  text-decoration: none;
-}
-
 .availability-lead {
   max-width: 560px;
   margin: 6px 0 0;

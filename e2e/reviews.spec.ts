@@ -4,30 +4,29 @@ test('完成课程、评分、修改、刷新与学员统计',async({page})=>{
  await page.goto('/');
  await page.locator('.booking').first().click();
  await page.getByRole('button',{name:'标记已完成'}).click();
- await expect(page.getByRole('heading',{name:'课后反馈'})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'课后记录'})).toBeVisible();
  await page.getByRole('radio',{name:'4 表现良好'}).check();
- await page.getByLabel('实际训练时长（分钟）').fill('55');
+ await page.getByLabel('训练时长（分钟）').fill('55');
  await page.getByLabel('学员反馈用力程度').selectOption('7');
- await page.getByRole('button',{name:'保存反馈',exact:true}).click();
+ await page.getByRole('button',{name:'保存记录',exact:true}).click();
  /* 反馈面板内的状态提示（页面级通知条也是 status，这里要定位到面板） */
- await expect(page.locator('.review-section').getByRole('status')).toContainText('反馈已保存');
+ await expect(page.locator('.review-section').getByRole('status')).toContainText('记录已保存');
  await page.reload();
  await expect(page.getByRole('radio',{name:'4 表现良好'})).toBeChecked();
- await expect(page.getByLabel('实际训练时长（分钟）')).toHaveValue('55');
+ await expect(page.getByLabel('训练时长（分钟）')).toHaveValue('55');
  await page.getByRole('radio',{name:'5 表现出色'}).check();
- await page.getByRole('button',{name:'更新反馈'}).click();
+ await page.getByRole('button',{name:'更新记录'}).click();
  await page.screenshot({path:`test-results/review-${test.info().project.name}.png`,fullPage:true});
  await page.getByRole('button',{name:'返回',exact:true}).click();
  await page.getByRole('link',{name:'我的',exact:true}).click();
- await expect(page.locator('.training-stats')).toContainText('5.0');
- await expect(page.locator('.training-stats')).toContainText('已评 1 / 1');
+ await expect(page.locator('.teaching-records')).toContainText('完成 1 节');
+ await expect(page.locator('.teaching-records')).toContainText('表现 5/5');
+ await expect(page.locator('.teaching-records')).toContainText('有评分 1 节');
  await page.getByRole('link',{name:'学员',exact:true}).click();
  await page.locator('.student-row').first().click();
  await page.locator('.student-review > summary').click();
- await expect(page.locator('.training-stats')).toContainText('55');
+ await expect(page.locator('.training-stats')).toContainText('55 分钟');
+ await expect(page.locator('.training-stats')).toContainText('1 节样本');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
  await page.screenshot({path:`test-results/student-${test.info().project.name}.png`,fullPage:true});
 });
-
-
-

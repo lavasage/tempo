@@ -1,0 +1,30 @@
+<view class="page">
+  <topbar title="{{title}}" back compact></topbar>
+
+  <view class="pad">
+    <view class="field">
+      <text class="field-label">姓名</text>
+      <input class="field-input" value="{{name}}" data-key="name" bindinput="onField" maxlength="40" placeholder="学员姓名" placeholder-class="ph" />
+    </view>
+    <view class="field">
+      <text class="field-label">联系电话</text>
+      <input class="field-input num" type="number" value="{{phone}}" data-key="phone" bindinput="onField" maxlength="15" placeholder="选填" placeholder-class="ph" />
+    </view>
+    <view class="field">
+      <text class="field-label">训练目标</text>
+      <input class="field-input" value="{{goal}}" data-key="goal" bindinput="onField" maxlength="200" placeholder="例如 12 周改善圆肩" placeholder-class="ph" />
+    </view>
+    <view class="field">
+      <text class="field-label">课程偏好</text>
+      <view class="chips">
+        <view wx:for="{{typeOptions}}" wx:key="id" class="chip {{item.on ? 'on' : ''}}" data-id="{{item.id}}" bindtap="toggleType">{{item.name}}</view>
+      </view>
+    </view>
+    <view class="field">
+      <text class="field-label">备注</text>
+      <textarea class="field-textarea" value="{{notes}}" data-key="notes" bindinput="onField" maxlength="1000" placeholder="伤病、时间偏好等" placeholder-class="ph" />
+    </view>
+
+    <view class="btn primary block save" bindtap="save">保存学员</view>
+  </view>
+</view>

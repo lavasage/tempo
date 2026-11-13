@@ -1,0 +1,266 @@
+.statusbar {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-top: 10rpx;
+}
+
+.when {
+  font-size: 24rpx;
+  color: var(--ink-3);
+}
+
+.form {
+  margin-top: 20rpx;
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 28rpx;
+  overflow: hidden;
+}
+
+.frow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  min-height: 104rpx;
+  padding: 0 26rpx;
+  border-bottom: 2rpx solid var(--line);
+  box-sizing: border-box;
+}
+
+.fk {
+  display: block;
+  font-size: 25rpx;
+  color: var(--ink-3);
+  flex: none;
+}
+
+.fv {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  justify-content: flex-end;
+  min-width: 0;
+  font-size: 28rpx;
+  font-weight: 500;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fv.hint {
+  color: var(--ink-3);
+  font-weight: 400;
+}
+
+.fblock {
+  padding: 24rpx 26rpx;
+  border-bottom: 2rpx solid var(--line);
+}
+
+.fblock .fk {
+  margin-bottom: 14rpx;
+}
+
+.type-dot {
+  display: inline-flex;
+  align-items: center;
+  height: 46rpx;
+  padding: 0 16rpx;
+  border-radius: 10rpx;
+  font-size: 23rpx;
+  font-weight: 600;
+}
+
+.hint-line {
+  padding: 16rpx 26rpx;
+  font-size: 22rpx;
+  color: var(--ink-3);
+  background: var(--surface-muted, #f8f9fb);
+  border-bottom: 2rpx solid var(--line);
+}
+
+.ph {
+  color: #a8b0bd;
+}
+
+/* 冲突 */
+.conflict {
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background: var(--warning-soft);
+  border-radius: 20rpx;
+}
+
+.conflict-t {
+  display: block;
+  font-size: 24rpx;
+  color: var(--warning);
+  line-height: 1.5;
+}
+
+.conflict .chips {
+  margin-top: 14rpx;
+}
+
+.conflict .caption {
+  display: block;
+  margin-top: 10rpx;
+}
+
+.actions {
+  margin-top: 28rpx;
+}
+
+.status-actions {
+  margin-top: 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+/* 扣课 */
+.ledger {
+  padding: 4rpx 26rpx;
+}
+
+.ledger-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  min-height: 92rpx;
+}
+
+.ledger-row + .ledger-row {
+  border-top: 2rpx solid var(--line);
+}
+
+.ledger-k {
+  font-size: 27rpx;
+  font-weight: 500;
+}
+
+.ledger-v {
+  font-size: 26rpx;
+  color: var(--ink-2);
+}
+
+.ledger-act {
+  padding: 8rpx 0 12rpx;
+  border-top: 2rpx solid var(--line);
+}
+
+/* 课后记录 */
+.review {
+  padding: 4rpx 26rpx 26rpx;
+}
+
+.rblock {
+  padding: 24rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+
+.rblock:last-of-type {
+  border-bottom: 0;
+}
+
+.rblock .fk {
+  margin-bottom: 16rpx;
+}
+
+.rhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.rhead .fk {
+  margin-bottom: 0;
+}
+
+.stars {
+  display: flex;
+  gap: 14rpx;
+}
+
+.star {
+  flex: 1;
+  height: 84rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--ink-3);
+  background: var(--surface-sunken);
+  border-radius: 16rpx;
+}
+
+.star.on {
+  color: var(--lime-ink);
+  background: var(--lime);
+}
+
+.inline {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.mini-input {
+  width: 200rpx;
+  height: 88rpx;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+  background: var(--surface-sunken);
+  border-radius: 16rpx;
+  text-align: center;
+}
+
+.step {
+  width: 88rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  background: var(--surface-sunken);
+  border-radius: 16rpx;
+}
+
+.step-val {
+  min-width: 88rpx;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.btn.mini {
+  min-height: 44px;
+  padding: 0 18rpx;
+  font-size: 23rpx;
+}
+
+.review .btn.primary {
+  margin-top: 24rpx;
+}
+
+.closed {
+  margin-top: 32rpx;
+  text-align: center;
+}
+
+/* 长文案（例如「私教 12 节 · 剩余 4 节」）在 360 下要能省略，不能顶到箭头 */
+.fv-t {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -32,7 +32,6 @@ watch(
 );
 
 const dirty = computed(() => JSON.stringify(draft.value) !== baseline.value);
-const nickname = computed(() => draft.value.name.trim().slice(-2) || '新');
 
 function toggle(id: string) {
   draft.value.preferences = draft.value.preferences.includes(id)
@@ -84,21 +83,15 @@ onUnmounted(() => window.removeEventListener('beforeunload', unload));
 <template>
   <div class="page student-editor-page">
     <header class="page-head">
-      <span class="eyebrow"><span class="dot" aria-hidden="true" />{{ route.params.id ? '编辑档案' : '新增学员' }}</span>
-      <button class="text student-back" @click="back"><ArrowLeft :size="15" />学员</button>
-      <h1>{{ route.params.id ? '编辑学员' : '新增学员' }}</h1>
+      <div class="subpage-navigation">
+        <button type="button" class="back-navigation" @click="back"><ArrowLeft :size="20" />学员</button>
+        <h1>{{ route.params.id ? '编辑学员' : '新增学员' }}</h1>
+      </div>
     </header>
 
     <p v-if="route.params.id && !existing" role="alert" class="error">学员不存在，请返回学员列表。</p>
 
     <form v-else class="student-editor" @submit.prevent="save(false)">
-      <div class="editor-identity">
-        <span class="avatar avatar-lg">{{ nickname }}</span>
-        <div>
-          <p class="muted">{{ route.params.id ? '更新资料不会影响已排课程' : '先建档案，再直接排第一节课' }}</p>
-        </div>
-      </div>
-
       <label for="student-name">姓名
         <input id="student-name" v-model="draft.name" autocomplete="name" maxlength="40" placeholder="学员姓名" required />
       </label>

@@ -1,0 +1,480 @@
+/* Tempo · 小程序全局样式
+ * 与 web 端 tokens.css 同源：浅色画布、石墨色文字、小面积荧光绿。 */
+page {
+  --canvas: #f3f5f8;
+  --surface: #ffffff;
+  --surface-sunken: #eef1f5;
+  --ink: #1b2027;
+  --ink-2: #48515e;
+  --ink-3: #727c8a;
+  --line: #e3e7ee;
+  --line-strong: #cfd5e0;
+  --lime: #d5fa45;
+  --lime-deep: #b9e322;
+  --lime-ink: #1d2606;
+  --blue: #4263eb;
+  --graphite: #20252c;
+
+  --success: #1f7d55;
+  --success-soft: #e4f4ec;
+  --warning: #a86a10;
+  --warning-soft: #fdf1dd;
+  --danger: #c8404a;
+  --danger-soft: #fdeaea;
+  --info: #3a55cf;
+  --info-soft: #eaeeff;
+
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: -apple-system, "PingFang SC", "HarmonyOS Sans SC", "Helvetica Neue", sans-serif;
+  font-size: 28rpx;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  min-height: 100vh;
+  padding-bottom: calc(48rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+.pad {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+}
+
+/* ---------------- 文字 ---------------- */
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+  font-weight: inherit;
+}
+
+.title-xl {
+  font-size: 46rpx;
+  font-weight: 700;
+  letter-spacing: -0.6rpx;
+  line-height: 1.2;
+}
+
+.title-l {
+  font-size: 34rpx;
+  font-weight: 700;
+  letter-spacing: -0.2rpx;
+}
+
+.title-m {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.body {
+  font-size: 28rpx;
+  color: var(--ink-2);
+}
+
+.muted {
+  font-size: 26rpx;
+  color: var(--ink-3);
+}
+
+.caption {
+  font-size: 24rpx;
+  color: var(--ink-3);
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* ---------------- 按钮 ---------------- */
+button {
+  padding: 0;
+  margin: 0;
+  width: auto;
+  font-size: 28rpx;
+  line-height: 1.2;
+  background: transparent;
+  color: inherit;
+  border-radius: 0;
+}
+
+button::after {
+  border: none;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  min-height: 44px;
+  padding: 0 32rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 24rpx;
+}
+
+.btn.primary {
+  color: #fff;
+  background: var(--blue);
+  border-color: transparent;
+}
+
+.btn.graphite {
+  color: #fff;
+  background: var(--graphite);
+  border-color: transparent;
+}
+
+.btn.lime {
+  color: var(--lime-ink);
+  background: var(--lime);
+  border-color: transparent;
+}
+
+.btn.quiet {
+  color: var(--ink-2);
+  background: transparent;
+  border-color: transparent;
+  min-height: 44px;
+  padding: 0 14rpx;
+  font-weight: 500;
+}
+
+.btn.danger {
+  color: var(--danger);
+  background: var(--danger-soft);
+  border-color: transparent;
+}
+
+.btn.sm {
+  min-height: 44px;
+  padding: 0 26rpx;
+  font-size: 25rpx;
+  border-radius: 18rpx;
+}
+
+.btn.block {
+  width: 100%;
+}
+
+.btn.is-disabled {
+  opacity: 0.45;
+}
+
+/* ---------------- 分段控件 ---------------- */
+.seg {
+  display: flex;
+  padding: 6rpx;
+  background: var(--surface-sunken);
+  border-radius: 22rpx;
+}
+
+.seg-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--ink-3);
+  border-radius: 17rpx;
+}
+
+.seg-item.on {
+  color: var(--ink);
+  background: var(--surface);
+  box-shadow: 0 2rpx 8rpx rgba(20, 24, 29, 0.06);
+}
+
+/* ---------------- 卡片 ---------------- */
+.card {
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 28rpx;
+}
+
+.section {
+  margin-top: 48rpx;
+}
+
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 18rpx;
+}
+
+.hair {
+  height: 2rpx;
+  background: var(--line);
+}
+
+/* ---------------- 状态标签 ---------------- */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 40rpx;
+  padding: 0 14rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  border-radius: 10rpx;
+}
+
+.tag.pending {
+  color: var(--warning);
+  background: var(--warning-soft);
+}
+
+.tag.confirmed {
+  color: var(--info);
+  background: var(--info-soft);
+}
+
+.tag.completed {
+  color: var(--success);
+  background: var(--success-soft);
+}
+
+.tag.cancelled {
+  color: var(--ink-3);
+  background: var(--surface-sunken);
+}
+
+.tag.lime {
+  color: var(--lime-ink);
+  background: var(--lime);
+}
+
+/* ---------------- 空状态 ---------------- */
+.empty {
+  padding: 56rpx 32rpx;
+  text-align: center;
+}
+
+.empty-title {
+  display: block;
+  margin: 0;
+  font-size: 28rpx;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.empty p {
+  margin-bottom: 8rpx;
+}
+
+/* ---------------- 弹层 ---------------- */
+.mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(20, 24, 29, 0.42);
+  z-index: 90;
+}
+
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 91;
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-radius: 32rpx 32rpx 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx 18rpx;
+  border-bottom: 2rpx solid var(--line);
+}
+
+.sheet-body {
+  padding: 24rpx 32rpx 32rpx;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* ---------------- 表单 ---------------- */
+.field {
+  margin-bottom: 28rpx;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 10rpx;
+  font-size: 24rpx;
+  color: var(--ink-3);
+}
+
+.field-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 90rpx;
+  padding: 0 24rpx;
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 20rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+}
+
+.field-input {
+  width: 100%;
+  min-height: 90rpx;
+  padding: 0 24rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 20rpx;
+}
+
+.field-textarea {
+  width: 100%;
+  height: 150rpx;
+  padding: 20rpx 24rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 20rpx;
+}
+
+.chev {
+  width: 14rpx;
+  height: 14rpx;
+  border-right: 3rpx solid var(--ink-3);
+  border-bottom: 3rpx solid var(--ink-3);
+  transform: rotate(-45deg);
+  flex: none;
+}
+
+/* ---------------- 列表行 ---------------- */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  min-height: 104rpx;
+  padding: 0 32rpx;
+  background: var(--surface);
+  box-sizing: border-box;
+}
+
+.row + .row {
+  border-top: 2rpx solid var(--line);
+}
+
+.row-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.row-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row-sub {
+  margin-top: 4rpx;
+  font-size: 24rpx;
+  color: var(--ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44rpx;
+  padding: 0 16rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  border-radius: 999rpx;
+  background: var(--surface-sunken);
+  color: var(--ink-2);
+}
+
+.pill.lime {
+  color: var(--lime-ink);
+  background: var(--lime);
+}
+
+/* ---------------- 浮动操作 ---------------- */
+.fab {
+  position: fixed;
+  right: 32rpx;
+  bottom: calc(40rpx + env(safe-area-inset-bottom));
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 108rpx;
+  height: 108rpx;
+  border-radius: 999rpx;
+  color: var(--lime-ink);
+  background: var(--lime);
+  box-shadow: 0 14rpx 32rpx -12rpx rgba(120, 160, 10, 0.7);
+}
+
+.fab-plus {
+  font-size: 52rpx;
+  line-height: 1;
+  font-weight: 400;
+}
+
+/* ---------------- 选项片 ---------------- */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 24rpx;
+  box-sizing: border-box;
+  font-size: 25rpx;
+  font-weight: 600;
+  color: var(--ink-2);
+  background: var(--surface-sunken);
+  border-radius: 18rpx;
+}
+
+.chip.on {
+  color: var(--lime-ink);
+  background: var(--lime);
+}
+
+.chip.solid {
+  color: var(--ink);
+  background: var(--surface);
+  border: 2rpx solid var(--line-strong);
+  font-variant-numeric: tabular-nums;
+}

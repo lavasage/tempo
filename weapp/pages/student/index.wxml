@@ -1,0 +1,176 @@
+<view class="page">
+  <topbar title="学员档案" back compact></topbar>
+
+  <view wx:if="{{missing}}" class="empty">
+    <view class="empty-title">学员不存在</view>
+  </view>
+
+  <view wx:else class="pad">
+    <!-- 档案头 -->
+    <view class="profile">
+      <view class="avatar" style="background:{{bg}};color:{{ink}}">{{initial}}</view>
+      <view class="p-main">
+        <view class="title-l">{{name}}</view>
+        <text class="p-goal">{{goal || '未填写训练目标'}}</text>
+      </view>
+      <view class="btn sm" bindtap="edit">编辑</view>
+    </view>
+
+    <view class="facts">
+      <view class="fact"><text class="fact-v num">{{completed}}</text><text class="fact-k">已完成</text></view>
+      <view class="fact"><text class="fact-v num">{{active}}</text><text class="fact-k">有效预约</text></view>
+      <view class="fact"><text class="fact-v">{{last || '—'}}</text><text class="fact-k">最近一次</text></view>
+    </view>
+
+    <!-- 套餐 -->
+    <view class="section">
+      <view class="section-head">
+        <text class="title-m">课时套餐</text>
+        <view class="btn quiet mini" bindtap="openPackage">登记套餐</view>
+      </view>
+
+      <view wx:if="{{!packages.length}}" class="card empty">
+        <view class="empty-title">还没有套餐</view>
+        <text class="caption">登记后，排课时可以关联课时并自动扣减</text>
+      </view>
+
+      <view wx:for="{{packages}}" wx:key="id" class="pkg card {{item.expired ? 'expired' : ''}}">
+        <view class="pkg-head">
+          <text class="pkg-name">{{item.name}}</text>
+          <text class="pkg-type">{{item.typeName}}</text>
+        </view>
+        <view class="pkg-balance">
+          <text class="pkg-k">剩余</text>
+          <view class="pkg-line">
+            <text class="pkg-num num">{{item.remaining}}</text>
+            <text class="pkg-u">节 · 共 {{item.total}} 节</text>
+          </view>
+        </view>
+        <view class="pkg-cols">
+          <view class="pkg-col"><text class="pkg-cv num">{{item.used}}</text><text class="pkg-ck">已上</text></view>
+          <view class="pkg-col"><text class="pkg-cv num">{{item.occupied}}</text><text class="pkg-ck">占用</text></view>
+          <view class="pkg-col"><text class="pkg-cv num {{item.available <= 0 ? 'zero' : ''}}">{{item.available}}</text><text class="pkg-ck">可约</text></view>
+        </view>
+        <view class="pkg-foot">
+          <text class="caption {{item.expired ? 'warn' : ''}}">{{item.expired ? '已过期 · ' : ''}}{{item.expires}}</text>
+          <view class="btn sm" data-id="{{item.id}}" bindtap="renew">续购</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 训练表现 -->
+    <view class="section">
+      <view class="section-head">
+        <text class="title-m">训练表现</text>
+        <text class="caption">仅这位学员的评分样本</text>
+      </view>
+      <view class="card stats">
+        <view class="stat">
+          <text class="stat-v num">{{stats.average}}</text>
+          <text class="stat-k">平均表现</text>
+        </view>
+        <view class="stat">
+          <text class="stat-v num">{{stats.effort}}</text>
+          <text class="stat-k">平均用力</text>
+        </view>
+        <view class="stat">
+          <text class="stat-v num">{{stats.completed}}</text>
+          <text class="stat-k">完成节数</text>
+        </view>
+        <view class="stat">
+          <text class="stat-v num">{{stats.logged}}</text>
+          <text class="stat-k">有记录</text>
+        </view>
+      </view>
+      <text class="caption stat-note">
+        已记录训练 {{stats.minutes}}{{stats.unrated ? ' · ' + stats.unrated + ' 节未评分（不按 0 分计）' : ''}}
+      </text>
+    </view>
+
+    <!-- 最近课程 -->
+    <view class="section">
+      <view class="section-head">
+        <text class="title-m">最近课程</text>
+        <text wx:if="{{more}}" class="caption">还有 {{more}} 节</text>
+      </view>
+      <view wx:if="{{!courses.length}}" class="card empty">
+        <view class="empty-title">还没有课程</view>
+      </view>
+      <view wx:else class="card courses">
+        <view wx:for="{{courses}}" wx:key="id" class="course" data-id="{{item.id}}" bindtap="openCourse">
+          <view class="c-date">
+            <text class="c-day num">{{item.day}}</text>
+            <text class="c-time num">{{item.time}}</text>
+          </view>
+          <view class="c-main">
+            <text class="c-type" style="background:{{item.bg}};color:{{item.ink}}">{{item.typeName}}</text>
+          </view>
+          <text class="tag {{item.status}}">{{item.statusLabel}}</text>
+          <view class="chev"></view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{phone || notes}}" class="section">
+      <view class="section-head"><text class="title-m">备注</text></view>
+      <view class="card info">
+        <text wx:if="{{phone}}" class="info-row">电话 {{phone}}</text>
+        <text wx:if="{{notes}}" class="info-row">{{notes}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 登记 / 续购套餐 -->
+  <view wx:if="{{packageOpen}}" class="mask" bindtap="closePackage"></view>
+  <view wx:if="{{packageOpen}}" class="sheet">
+    <view class="sheet-head">
+      <view>
+        <view class="title-m">登记套餐</view>
+        <view class="caption">每次购买独立建档，余额按流水计算</view>
+      </view>
+      <view class="btn quiet" bindtap="closePackage">关闭</view>
+    </view>
+    <scroll-view scroll-y class="sheet-body">
+      <view class="field">
+        <text class="field-label">套餐名称</text>
+        <input class="field-input" value="{{form.name}}" data-key="name" bindinput="onField" placeholder="例如 私教 12 节" placeholder-class="ph" maxlength="40" />
+      </view>
+      <view class="field-row">
+        <view class="field half">
+          <text class="field-label">总节数</text>
+          <input class="field-input num" type="number" value="{{form.total}}" data-key="total" bindinput="onField" placeholder="12" placeholder-class="ph" />
+        </view>
+        <view class="field half">
+          <text class="field-label">期初已用</text>
+          <input class="field-input num" type="number" value="{{form.initial}}" data-key="initial" bindinput="onField" placeholder="0" placeholder-class="ph" />
+        </view>
+      </view>
+      <view class="field">
+        <text class="field-label">适用类型</text>
+        <picker range="{{typeOptions}}" value="{{form.typeIndex}}" bindchange="onType">
+          <view class="field-box">{{typeOptions[form.typeIndex]}}<view class="chev"></view></view>
+        </picker>
+      </view>
+      <view class="field-row">
+        <view class="field half">
+          <text class="field-label">购买日期</text>
+          <picker mode="date" value="{{form.purchased}}" data-key="purchased" bindchange="onField">
+            <view class="field-box">{{form.purchased}}<view class="chev"></view></view>
+          </picker>
+        </view>
+        <view class="field half">
+          <text class="field-label">到期日期</text>
+          <picker mode="date" value="{{form.expires || form.purchased}}" bindchange="pickExpiry">
+            <view class="field-box {{form.expires ? '' : 'dashed'}}">{{form.expires || '不限期'}}<view class="chev"></view></view>
+          </picker>
+        </view>
+      </view>
+      <view wx:if="{{form.expires}}" class="btn quiet mini" bindtap="clearExpiry">清除到期日期</view>
+      <view class="field">
+        <text class="field-label">备注</text>
+        <textarea class="field-textarea" value="{{form.notes}}" data-key="notes" bindinput="onField" maxlength="200" placeholder="购买渠道、优惠等" placeholder-class="ph" />
+      </view>
+      <view class="btn lime block" bindtap="savePackage">保存套餐</view>
+    </scroll-view>
+  </view>
+</view>

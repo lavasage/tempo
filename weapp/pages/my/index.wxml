@@ -1,0 +1,124 @@
+<view class="page">
+  <topbar title="我的" sub="{{coach}} · 私人教练"></topbar>
+
+  <view class="pad">
+    <!-- 概览 -->
+    <view class="summary">
+      <view class="sum-cell">
+        <text class="sum-v num">{{weekCount}}</text>
+        <text class="sum-k">本周安排</text>
+      </view>
+      <view class="sum-cell">
+        <text class="sum-v num">{{monthCompleted}}</text>
+        <text class="sum-k">本月完成</text>
+      </view>
+      <view class="sum-cell" bindtap="goStudents">
+        <text class="sum-v num">{{studentCount}}</text>
+        <text class="sum-k">学员</text>
+      </view>
+    </view>
+
+    <!-- 账号 -->
+    <view class="account">
+      <block wx:if="{{loggedIn}}">
+        <image wx:if="{{avatar}}" class="acc-avatar" src="{{avatar}}" mode="aspectFill"></image>
+        <view wx:else class="acc-avatar plain">{{initial}}</view>
+        <view class="acc-main">
+          <text class="acc-name">{{nickname}}</text>
+          <text class="caption">已登录 · 数据仅存本机</text>
+        </view>
+        <view class="btn quiet" bindtap="signOut">退出</view>
+      </block>
+      <block wx:else>
+        <view class="acc-avatar plain">{{initial}}</view>
+        <view class="acc-main">
+          <text class="acc-name">未登录</text>
+          <text class="caption">登录后保留身份，换设备需服务端支持</text>
+        </view>
+        <view class="btn sm graphite" bindtap="login">登录</view>
+      </block>
+    </view>
+
+    <!-- 授课记录 -->
+    <view class="section">
+      <view class="rec-head">
+        <text class="title-m">授课记录</text>
+      </view>
+
+      <view class="seg ranges">
+        <view
+          wx:for="{{dayOptions}}"
+          wx:key="n"
+          class="seg-item {{item.on ? 'on' : ''}}"
+          data-days="{{item.n}}"
+          bindtap="setDays"
+        >{{item.n ? item.n + ' 天' : '全部'}}</view>
+      </view>
+
+      <!-- 完全没有已完成课程 -->
+      <view wx:if="{{!allCount}}" class="empty-box">
+        <text class="empty-title">还没有已完成课程</text>
+        <view class="empty-link" bindtap="goSchedule">查看课表<view class="chev"></view></view>
+      </view>
+
+      <!-- 只是这个范围里没有 -->
+      <view wx:elif="{{scopeEmpty}}" class="empty-box">
+        <text class="empty-title">这段时间暂无已完成课程</text>
+        <view class="empty-link" data-days="0" bindtap="setDays">查看全部记录<view class="chev"></view></view>
+      </view>
+
+      <block wx:else>
+        <view class="facts">
+          <text class="fact">完成 <text class="fact-b num">{{count}}</text> 节</text>
+          <text class="fact">排课时长 <text class="fact-b">{{scheduled}}</text></text>
+        </view>
+        <text class="meta">已记录训练时长 {{logged}}（{{loggedCount}} 节有记录）</text>
+        <text class="meta">有评分 {{ratedCount}} 节<text wx:if="{{effortCount}}"> · 用力反馈 {{effortCount}} 条</text></text>
+
+        <view wx:if="{{pendingCount}}" class="pending-toggle {{pendingOnly ? 'on' : ''}}" bindtap="togglePending">
+          <view class="pt-left">
+            <text>待补反馈</text>
+            <text class="pt-count">{{pendingCount}}</text>
+          </view>
+          <view class="pt-right">
+            <text>{{pendingOnly ? '看最近授课' : '只看这些'}}</text>
+            <view class="chev"></view>
+          </view>
+        </view>
+
+        <view class="list-title">{{listTitle}}</view>
+        <view class="records">
+          <view wx:for="{{rows}}" wx:key="id" class="rec" data-id="{{item.id}}" bindtap="openRecord">
+            <text class="rec-day">{{item.day}}</text>
+            <view class="rec-main">
+              <text class="rec-name">{{item.name}} · {{item.typeName}}</text>
+              <text class="rec-status {{item.status}}">{{item.statusText}}</text>
+            </view>
+            <view class="chev"></view>
+          </view>
+        </view>
+
+        <view wx:if="{{!pendingOnly && rest.length}}" class="all-toggle" bindtap="toggleAll">
+          <text>全部授课记录</text>
+          <view class="all-right">
+            <text class="num">{{restCount}} 节</text>
+            <view class="chev {{expandAll ? 'up' : ''}}"></view>
+          </view>
+        </view>
+        <view wx:if="{{!pendingOnly && expandAll && rest.length}}" class="records">
+          <view wx:for="{{rest}}" wx:key="id" class="rec" data-id="{{item.id}}" bindtap="openRecord">
+            <text class="rec-day">{{item.day}}</text>
+            <view class="rec-main">
+              <text class="rec-name">{{item.name}} · {{item.typeName}}</text>
+              <text class="rec-status {{item.status}}">{{item.statusText}}</text>
+            </view>
+            <view class="chev"></view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view class="reset" bindtap="resetDemo">恢复演示数据</view>
+    <text class="caption reset-note">数据保存在本机，未上传云端。恢复演示数据会清空当前记录。</text>
+  </view>
+</view>

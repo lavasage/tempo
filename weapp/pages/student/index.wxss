@@ -1,0 +1,291 @@
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-top: 16rpx;
+}
+
+.avatar {
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38rpx;
+  font-weight: 700;
+  flex: none;
+}
+
+.p-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.p-goal {
+  display: block;
+  margin-top: 4rpx;
+  font-size: 24rpx;
+  color: var(--ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.facts {
+  display: flex;
+  margin-top: 24rpx;
+  padding: 20rpx 0;
+  background: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 24rpx;
+}
+
+.fact {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+  min-width: 0;
+  border-right: 2rpx solid var(--line);
+}
+
+.fact:last-child {
+  border-right: 0;
+}
+
+.fact-v {
+  font-size: 30rpx;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.fact-k {
+  font-size: 21rpx;
+  color: var(--ink-3);
+}
+
+/* 套餐卡 */
+.pkg {
+  padding: 24rpx 26rpx;
+  margin-bottom: 20rpx;
+}
+
+.pkg-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.pkg-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pkg-type {
+  flex: none;
+  font-size: 20rpx;
+  color: var(--ink-3);
+  background: var(--surface-sunken);
+  padding: 4rpx 12rpx;
+  border-radius: 999rpx;
+}
+
+.pkg-balance {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  margin-top: 14rpx;
+}
+
+.pkg-line {
+  display: flex;
+  align-items: baseline;
+  gap: 10rpx;
+}
+
+.pkg-k {
+  font-size: 23rpx;
+  color: var(--ink-3);
+}
+
+.pkg-num {
+  font-size: 54rpx;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.pkg-u {
+  font-size: 23rpx;
+  color: var(--ink-3);
+}
+
+.pkg.expired .pkg-num {
+  color: var(--ink-3);
+}
+
+.pkg-cols {
+  display: flex;
+  margin-top: 18rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid var(--line);
+}
+
+.pkg-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+}
+
+.pkg-cv {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.pkg-cv.zero {
+  color: var(--warning);
+}
+
+.pkg-ck {
+  font-size: 20rpx;
+  color: var(--ink-3);
+}
+
+.pkg-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16rpx;
+}
+
+.caption.warn {
+  color: var(--warning);
+}
+
+/* 训练表现 */
+.stats {
+  display: flex;
+  padding: 22rpx 0;
+}
+
+.stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+}
+
+.stat-v {
+  font-size: 36rpx;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.stat-k {
+  font-size: 20rpx;
+  color: var(--ink-3);
+}
+
+.stat-note {
+  display: block;
+  margin-top: 12rpx;
+  line-height: 1.5;
+}
+
+/* 课程列表 */
+.courses {
+  overflow: hidden;
+}
+
+.course {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  min-height: 104rpx;
+  padding: 14rpx 24rpx;
+  box-sizing: border-box;
+}
+
+.course + .course {
+  border-top: 2rpx solid var(--line);
+}
+
+.c-date {
+  width: 108rpx;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.c-day {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.c-time {
+  font-size: 21rpx;
+  color: var(--ink-3);
+}
+
+.c-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.c-type {
+  display: inline-flex;
+  align-items: center;
+  height: 40rpx;
+  padding: 0 14rpx;
+  border-radius: 8rpx;
+  font-size: 21rpx;
+  font-weight: 600;
+}
+
+.info {
+  padding: 22rpx 24rpx;
+}
+
+.info-row {
+  display: block;
+  font-size: 25rpx;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+
+.info-row + .info-row {
+  margin-top: 6rpx;
+}
+
+/* 套餐表单 */
+.field-row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.field.half {
+  flex: 1;
+  min-width: 0;
+}
+
+.field-box.dashed {
+  color: var(--ink-3);
+  border-style: dashed;
+}
+
+.btn.mini {
+  min-height: 44px;
+  padding: 0 18rpx;
+  font-size: 23rpx;
+}
+
+.ph {
+  color: #a8b0bd;
+}

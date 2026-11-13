@@ -1,0 +1,15 @@
+<view class="topbar" style="padding-top:{{statusBar}}px">
+  <view class="bar" style="height:{{navH}}px">
+    <view wx:if="{{back}}" class="back" bindtap="onBack" aria-role="button" aria-label="返回">
+      <view class="back-icon"></view>
+    </view>
+    <view wx:if="{{back || compact}}" class="bar-title {{compact ? 'compact' : ''}}">{{title}}</view>
+  </view>
+  <view wx:if="{{!back && !compact}}" class="head">
+    <view class="head-main">
+      <view class="title-xl">{{title}}</view>
+      <view wx:if="{{sub}}" class="caption head-sub">{{sub}}</view>
+    </view>
+    <slot name="action"></slot>
+  </view>
+</view>

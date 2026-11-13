@@ -4,7 +4,7 @@ import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
-export const MIGRATIONS = ['0001_schema.sql', '0002_rls.sql', '0003_guard.sql', '0004_client.sql', '0005_student_goal.sql', '0006_completion_time.sql', '0007_lesson_packages.sql'];
+export const MIGRATIONS = ['0001_schema.sql', '0002_rls.sql', '0003_guard.sql', '0004_client.sql', '0005_student_goal.sql', '0006_completion_time.sql', '0007_lesson_packages.sql', '0008_review_optional_rating.sql'];
 export const COACH_A = '11111111-1111-1111-1111-111111111111';
 export const COACH_B = '22222222-2222-2222-2222-222222222222';
 
