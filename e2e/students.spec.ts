@@ -3,7 +3,7 @@ import {test,expect} from '@playwright/test';
 test('新增学员、三节排课、改期取消、筛选与档案持久化',async({page})=>{
  await page.clock.setFixedTime(new Date('2026-11-11T10:30:00+08:00'));
  await page.goto('/');
- await page.getByRole('link',{name:'添加学员',exact:true}).click();
+ await page.getByRole('link',{name:'学员',exact:true}).click(); await page.getByRole('link',{name:'新增学员',exact:true}).click();
  await page.getByLabel('姓名',{exact:true}).fill('徐安');
  await page.getByLabel('联系电话', {exact:false}).fill('138 1234 5678');
  await page.getByRole('button',{name:'普拉提',exact:true}).click();
@@ -67,24 +67,24 @@ test('今日概览、下一节、确认与完成实时刷新',async({page})=>{
  await page.clock.setFixedTime(new Date('2026-11-11T10:30:00+08:00'));
  await page.goto('/');
  await expect(page.getByTestId('today-count')).toHaveText('4');
- await expect(page.getByTestId('month-completed')).toHaveText('0');
+ if(await page.getByRole('dialog').isVisible())await page.getByRole('button',{name:'关闭面板'}).click(); await page.getByRole('link',{name:'我的',exact:true}).click(); await expect(page.getByTestId('month-completed')).toHaveText('0'); await page.getByRole('link',{name:'课表',exact:true}).click();
  await expect(page.locator('.next-lesson')).toContainText('陈宇');
  await expect(page.locator('.next-lesson')).toContainText('11:00');
  await page.screenshot({path:`test-results/workbench-${test.info().project.name}.png`,fullPage:true});
- await page.locator('.work-items > summary').click();
+ await page.getByRole('button',{name:/^待处理/}).click();
  const past=page.locator('.work-item').filter({hasText:'林晓'});
  await past.getByRole('button',{name:'完成',exact:true}).click();
- await expect(page.getByTestId('month-completed')).toHaveText('1');
- await expect(past).toHaveCount(0);
+ if(await page.getByRole('dialog').isVisible())await page.getByRole('button',{name:'关闭面板'}).click(); await page.getByRole('link',{name:'我的',exact:true}).click(); await expect(page.getByTestId('month-completed')).toHaveText('1'); await page.getByRole('link',{name:'课表',exact:true}).click();
+ await page.getByRole('button',{name:/^待处理/}).click(); await expect(past).toHaveCount(0);
  const pending=page.locator('.work-item').filter({hasText:'王可欣'});
  await pending.getByRole('button',{name:'确认',exact:true}).click();
  await expect(pending).toHaveCount(0);
  await page.reload();
- await expect(page.getByTestId('month-completed')).toHaveText('1');
+ if(await page.getByRole('dialog').isVisible())await page.getByRole('button',{name:'关闭面板'}).click(); await page.getByRole('link',{name:'我的',exact:true}).click(); await expect(page.getByTestId('month-completed')).toHaveText('1'); await page.getByRole('link',{name:'课表',exact:true}).click();
  await expect(page.locator('.pending-dot')).toHaveCount(0);
  await page.getByRole('link',{name:'查看下一节课程',exact:true}).click();
  await expect(page.getByRole('combobox',{name:'学员',exact:true}).locator('option:checked')).toHaveText('陈宇');
- await page.getByRole('button',{name:'返回课表',exact:false}).click();
+ await page.getByRole('button',{name:'返回',exact:true}).click();
  await page.getByRole('button',{name:'周',exact:true}).click();
  await page.getByLabel('选择日期').fill('2026-11-19');
  await page.locator('.overview-today').click();
@@ -92,4 +92,7 @@ test('今日概览、下一节、确认与完成实时刷新',async({page})=>{
  await expect(page.getByRole('button',{name:'日',exact:true})).toHaveAttribute('aria-pressed','true');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
+
+
+
 

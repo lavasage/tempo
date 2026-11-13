@@ -2,7 +2,6 @@
 import { computed, ref, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { ChevronLeft, ChevronRight, Plus, SlidersHorizontal, TriangleAlert, CalendarPlus } from 'lucide-vue-next';
-import TrainingStats from '../components/TrainingStats.vue';
 import CoachOverview from '../components/CoachOverview.vue';
 import { useNow } from '../composables/useNow';
 import CalendarTimeline from '../components/CalendarTimeline.vue';
@@ -22,13 +21,16 @@ type Mode = 'day' | 'week' | 'month';
 const date = ref(validDay(route.query.date));
 const mode = ref<Mode>(['day', 'week', 'month'].includes(String(route.query.view)) ? (route.query.view as Mode) : 'day');
 const now = useNow();
+const board=ref<HTMLElement|null>(null);
 
-watch([date, mode], () => router.replace({path: '/', query: {date: date.value, view: mode.value}}));
+watch(()=>route.query.view,v=>{if(route.path==='/'&&['day','week','month'].includes(String(v)))mode.value=v as Mode});
+
+watch([date, mode], () => {if(route.path==='/')router.replace({path: '/', query: {date: date.value, view: mode.value}})});
 watch(
   () => route.query.date,
   v => {
     // 抽屉作为子路由时 path 不是 '/'，仍要跟随课表 query。
-    if (v) date.value = validDay(v);
+    if (route.path==='/'&&v) date.value = validDay(v);
   }
 );
 
@@ -94,7 +96,6 @@ function create() {
   <div class="page calendar-page">
     <header class="calendar-heading">
       <div>
-        <span class="eyebrow"><span class="dot" aria-hidden="true" />训练日程</span>
         <h1>课表</h1>
         <span class="calendar-month">{{ heading }}</span>
       </div>
@@ -151,7 +152,7 @@ function create() {
       </RouterLink>
     </details>
 
-    <div v-if="mode !== 'month'" class="schedule-board" :class="{'week-board': mode === 'week'}">
+    <div v-if="mode !== 'month'" ref="board" class="schedule-board" :class="{'week-board': mode === 'week'}">
       <div class="board-head">
         <span />
         <button
@@ -211,10 +212,7 @@ function create() {
       </RouterLink>
     </details>
 
-    <details class="calendar-review">
-      <summary><CalendarPlus :size="15" aria-hidden="true" />训练回顾</summary>
-      <TrainingStats />
-    </details>
+
 
     <RouterView />
   </div>

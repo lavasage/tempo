@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+import {storeToRefs} from 'pinia';
+import {useNavigation} from '../stores/navigation';
 import { useRoute } from 'vue-router';
 import { Plus, Search, ChevronRight, ArrowLeft, Pencil, Phone, SlidersHorizontal, X, CalendarPlus, Target, StickyNote, Users } from 'lucide-vue-next';
 import TrainingStats from '../components/TrainingStats.vue';
@@ -15,7 +17,7 @@ import '../styles/students.css';
 const store = useTempo();
 const route = useRoute();
 const now = useNow();
-const search = ref('');
+const {search} = storeToRefs(useNavigation());
 const showFilters = ref(false);
 
 const selected = computed(() => (typeof route.params.id === 'string' ? route.params.id : ''));

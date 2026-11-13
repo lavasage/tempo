@@ -3,27 +3,21 @@ import {ref} from 'vue';
 import {remoteConfig} from '../services/remote/config';
 import {createApiClient} from '../services/remote/client';
 import {createRemoteRepository,type RemoteRepository} from '../services/remote/repository';
+import {browserStorage,createOutbox,outboxKey,type Outbox,type SyncOp} from '../services/outbox';
 import {useAuth} from './auth';
-import type {AvailabilitySettings,Booking,CourseType,Database,Status,Student,TrainingReview} from '../types';
+import type {Database} from '../types';
 
-export type SyncOp =
-  | {kind: 'student.save'; student: Student}
-  | {kind: 'type.save'; type: CourseType; coachId: string}
-  | {kind: 'booking.create'; booking: Booking}
-  | {kind: 'booking.update'; booking: Booking}
-  | {kind: 'booking.status'; id: string; status: Status}
-  | {kind: 'review.save'; review: TrainingReview}
-  | {kind: 'availability.save'; settings: AvailabilitySettings};
+export type {SyncOp};
 
 /**
- * 远端同步队列：本地先保存（界面即时），再按顺序推送。
- * 推送失败保留队列并停住，不丢操作；由界面上的「重试」再次触发。
+ * 远端同步队列：本地先保存（界面即时），队列落盘后再按顺序推送。
+ * 推送失败保留队列并停住，刷新或重连后从上次的位置继续；每个操作都必须幂等。
  */
 export const useSync=defineStore('sync',()=>{
  const auth=useAuth();
- const pending=ref(0),error=ref(''),lastOk=ref<number|null>(null);
- const queue:SyncOp[]=[];
- let running=false,repo:RemoteRepository|null=null;
+ const pending=ref(0),error=ref(''),lastOk=ref<number|null>(null),attempts=ref(0);
+ let box:Outbox|null=null;
+ let boxKey='',repo:RemoteRepository|null=null;
 
  function repository():RemoteRepository|null{
   const cfg=remoteConfig();
@@ -46,23 +40,42 @@ export const useSync=defineStore('sync',()=>{
   }
  }
 
- async function drain(){
-  if(running)return;
-  running=true;
-  try{
-   while(queue.length){
-    const op=queue[0]!;
-    try{await apply(op);queue.shift();pending.value=queue.length;error.value='';lastOk.value=Date.now()}
-    catch(e){error.value=e instanceof Error?e.message:'同步失败，请稍后重试';break}
+ /** 队列按账号分键：换账号不会把上一个账号的操作推上去。 */
+ function outbox():Outbox{
+  const key=outboxKey(auth.userId);
+  if(box&&boxKey===key)return box;
+  boxKey=key;
+  box=createOutbox({
+   key,
+   storage:browserStorage(),
+   apply,
+   onChange:snapshot=>{
+    pending.value=snapshot.ops.length;
+    error.value=snapshot.error;
+    lastOk.value=snapshot.lastOk;
+    attempts.value=snapshot.ops[0]?.attempts??0;
    }
-  }finally{running=false}
+  });
+  pending.value=box.snapshot().ops.length;
+  return box;
  }
 
- return {pending,error,lastOk,
+ return {pending,error,lastOk,attempts,
   /** 登录后拉取本账号快照；本地模式返回 null。 */
   async pull():Promise<Database|null>{if(auth.mode!=='remote'||!auth.signedIn)return null;const r=repository();if(!r)return null;return r.load()},
-  record(op:SyncOp){if(auth.mode!=='remote')return;queue.push(op);pending.value=queue.length;void drain()},
-  async retry(){error.value='';await drain()},
-  reset(){queue.length=0;pending.value=0;error.value='';lastOk.value=null;repo=null}
+  record(op:SyncOp){if(auth.mode!=='remote')return;const b=outbox();b.push(op);void b.drain()},
+  /** 刷新或重连后接回上次未提交的操作，并继续按顺序推送；返回是否真的推送过。 */
+  async restore(){
+   if(auth.mode!=='remote'||!auth.signedIn)return false;
+   const b=outbox();b.restore();
+   if(!b.snapshot().ops.length)return false;
+   await b.drain();
+   return true;
+  },
+  async retry(){await outbox().drain()},
+  /** 退出登录：只断开当前账号的会话，未提交的操作留在本机，下次登录继续。 */
+  detach(){box=null;boxKey='';repo=null;pending.value=0;error.value='';lastOk.value=null;attempts.value=0},
+  /** 彻底丢弃本账号未提交的操作（仅在明确放弃时使用）。 */
+  reset(){box?.clear();box=null;boxKey='';repo=null;pending.value=0;error.value='';lastOk.value=null;attempts.value=0}
  };
 });

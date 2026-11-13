@@ -15,6 +15,7 @@ const auth = useAuth();
 const sync = useSync();
 const route = useRoute();
 const router = useRouter();
+const secondaryPage = computed(() => !['/', '/students', '/my'].includes(route.path));
 const {state: pwa, install, dismiss, update} = usePwa();
 
 let timer: ReturnType<typeof setTimeout> | undefined;
@@ -70,9 +71,10 @@ function focusMain() {
 }
 
 async function signOut() {
-  if (!confirm('退出登录？未同步的改动将丢失。')) return;
+  const waiting = sync.pending;
+  if (!confirm(waiting ? `退出登录？还有 ${waiting} 项改动未同步，下次登录会自动继续提交。` : '退出登录？')) return;
   await auth.signOut();
-  sync.reset();
+  sync.detach();
   store.reset();
   clearCache();
   await router.replace('/login');
@@ -94,7 +96,7 @@ async function retryBoot() {
 
   <RouterView v-else-if="route.path === '/login'" />
 
-  <div v-else class="app-shell">
+  <div v-else class="app-shell" :class="{'secondary-page': secondaryPage}">
     <aside class="sidebar">
       <a class="brand" href="#/" aria-label="Tempo 首页">
         <span class="brand-mark"><Activity :size="20" aria-hidden="true" /></span>
@@ -109,7 +111,7 @@ async function retryBoot() {
         <RouterLink to="/students" :class="{'section-active': route.path.startsWith('/students')}">
           <Users aria-hidden="true" />学员
         </RouterLink>
-        <RouterLink to="/create"><Plus aria-hidden="true" />新建课程</RouterLink>
+        <RouterLink to="/my"><Activity aria-hidden="true" />我的</RouterLink>
       </nav>
 
       <div class="sidebar-foot">
@@ -141,7 +143,7 @@ async function retryBoot() {
           <div v-if="sync.error" role="alert" class="error sync-error">
             同步失败：{{ sync.error }}<button @click="sync.retry()"><RefreshCw :size="14" aria-hidden="true" />重试</button>
           </div>
-          <p v-else-if="sync.pending" class="sync-pending" role="status">正在同步 {{ sync.pending }} 项…</p>
+          <p v-else-if="sync.pending" class="sync-pending" role="status">{{ pwa.online ? `正在同步 ${sync.pending} 项…` : `${sync.pending} 项待同步，联网后自动提交` }}</p>
         </div>
 
         <section v-if="pwa.canInstall || pwa.iosHint" class="install-card" aria-labelledby="install-title">
@@ -164,7 +166,7 @@ async function retryBoot() {
           正在读取账号数据… <button class="text" @click="retryBoot">重试</button>
         </p>
 
-        <footer class="mobile-foot mobile-only">
+        <footer v-if="route.path==='/my'" class="mobile-foot mobile-only">
           <template v-if="store.remote">
             <button class="text" @click="signOut">退出登录</button>
             <span>·</span>{{ auth.email }}

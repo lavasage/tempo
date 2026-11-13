@@ -912,3 +912,19 @@ legend {
     scroll-behavior: auto !important;
   }
 }
+
+/* Mobile task pages own the screen; the tab bar belongs to root destinations. */
+@media (max-width: 760px) {
+  .secondary-page .sidebar,
+  .secondary-page .mobile-foot { display: none; }
+  .secondary-page .app-main {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  }
+  .secondary-page .app-notice {
+    bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+  .icon-button, .student-back, .profile-edit, .filter-toggle {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

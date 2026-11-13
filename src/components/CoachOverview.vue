@@ -1,17 +1,24 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { ArrowUpRight, Check, UserPlus, ChevronRight, Clock3, TriangleAlert, CalendarPlus } from 'lucide-vue-next';
+import {useRoute,useRouter} from 'vue-router';
+import BottomSheet from './BottomSheet.vue';
+import { Bell, Check, ChevronRight, Clock3, TriangleAlert } from 'lucide-vue-next';
 import { useTempo } from '../stores/tempo';
 import { workbench } from '../services/workbench';
 import { dateKey, time } from '../composables/date';
-import { PulseMark } from './ui';
+
 import type { Status } from '../types';
 import '../styles/workbench.css';
+import '../styles/overview-compact.css';
 
 const props = defineProps<{now: number}>();
 const emit = defineEmits<{today: []}>();
 const store = useTempo();
 const error = ref('');
+const route=useRoute(),router=useRouter();
+const tasksOpen=computed(()=>route.path==='/'&&route.query.panel==='tasks');
+function openTasks(){router.push({path:'/',query:{...route.query,panel:'tasks'}})}
+function closeTasks(){if(window.history.state?.back)router.back();else{const query={...route.query};delete query.panel;router.replace({path:'/',query})}}
 const overview = computed(() => workbench(store.data, new Date(props.now)));
 
 function name(id: string) {
@@ -35,63 +42,14 @@ function change(id: string, status: Status) {
 </script>
 
 <template>
-  <section class="coach-overview" aria-label="今日工作台">
-    <div class="overview-hero">
-      <PulseMark class="hero-pulse" :width="420" :height="90" color="rgba(213,250,69,.16)" :stroke="2" />
-
-      <div class="hero-metrics">
-        <button class="overview-today" @click="emit('today')">
-          <span class="metric-label">今日课程</span>
-          <span class="metric-value">
-            <b data-testid="today-count">{{ overview.todayCount }}</b>
-            <em>节</em>
-          </span>
-          <span v-if="overview.todayPending" class="pending-dot">
-            <Clock3 :size="12" aria-hidden="true" />{{ overview.todayPending }} 待确认
-          </span>
-          <span v-else class="clear-dot"><Check :size="12" aria-hidden="true" />已安排妥当</span>
-        </button>
-
-        <dl class="hero-secondary">
-          <div>
-            <dt>本周</dt>
-            <dd><span data-testid="week-count">{{ overview.weekCount }}</span> 节</dd>
-          </div>
-          <div>
-            <dt>本月完成</dt>
-            <dd><span data-testid="month-completed">{{ overview.monthCompleted }}</span> 节</dd>
-          </div>
-        </dl>
-      </div>
-
-      <div class="hero-next">
-        <div v-if="overview.next" class="next-lesson">
-          <RouterLink :to="'/booking/' + overview.next.id" class="next-lesson-link" aria-label="查看下一节课程">
-            <span class="next-time">
-              <span>{{ overview.ongoing ? '进行中' : '下一节' }}</span>
-              <b>{{ when(overview.next.start_at) }}</b>
-            </span>
-            <span class="next-student">
-              <strong>{{ name(overview.next.student_id) }}</strong>
-              <small>{{ course(overview.next.course_type_id) }} · {{ time(overview.next.end_at) }} 结束</small>
-            </span>
-            <ArrowUpRight :size="18" aria-hidden="true" />
-          </RouterLink>
-          <button v-if="overview.ongoing" class="btn-lime next-complete" @click="change(overview.next.id, 'completed')">
-            <Check :size="15" />完成课程
-          </button>
-        </div>
-
-        <div v-else class="next-empty">
-          <span><CalendarPlus :size="17" aria-hidden="true" />今天没有已确认的课程</span>
-          <RouterLink to="/create">快速排课 <ChevronRight :size="15" /></RouterLink>
-        </div>
-      </div>
-    </div>
-
-    <div class="workbench-bottom">
-      <details v-if="overview.items.length" class="work-items">
-        <summary>需要处理 <b>{{ overview.items.length }}</b></summary>
+  <section class="coach-overview compact-overview" aria-label="今日工作台">
+    <div class="schedule-hint">
+      <button class="overview-today" @click="emit('today')">今日 <b data-testid="today-count">{{overview.todayCount}}</b> 节</button>
+      <RouterLink v-if="overview.next" class="next-lesson hint-next" :to="'/booking/'+overview.next.id" aria-label="查看下一节课程"><span>{{overview.ongoing?'进行中':'下一节'}} {{time(overview.next.start_at)}}</span><b>{{name(overview.next.student_id)}}</b></RouterLink>
+      <span v-else class="hint-empty">暂无后续预约</span>
+      <button class="icon-button task-trigger" :aria-label="'待处理 '+overview.items.length+' 项'" :aria-expanded="tasksOpen" @click="openTasks"><Bell :size="20"/><i v-if="overview.items.length" class="notification-dot"/></button>
+      <BottomSheet :open="tasksOpen" :title="'待处理 · '+overview.items.length" @close="closeTasks">
+        <p v-if="!overview.items.length" class="muted">已处理完毕</p>
         <div v-for="item in overview.items" :key="item.booking.id" class="work-item">
           <TriangleAlert v-if="item.kind === 'conflict'" :size="15" class="work-icon warn" aria-hidden="true" />
           <Clock3 v-else-if="item.kind === 'pending'" :size="15" class="work-icon pending" aria-hidden="true" />
@@ -106,12 +64,8 @@ function change(id: string, status: Status) {
             <ChevronRight :size="17" />
           </RouterLink>
         </div>
-      </details>
-      <span v-else class="work-clear"><Check :size="15" aria-hidden="true" />暂无待处理</span>
-
-      <RouterLink class="add-student-shortcut" to="/students/new"><UserPlus :size="15" />添加学员</RouterLink>
+        <p v-if="error" class="error" role="alert">{{error}}</p>
+      </BottomSheet>
     </div>
-
-    <p v-if="error" class="error" role="alert">{{ error }}</p>
   </section>
 </template>

@@ -1,0 +1,35 @@
+.settings-row{display:flex;align-items:center;gap:12px;min-height:64px;padding:16px;background:var(--surface);border-radius:12px;margin:24px 0}.settings-row span{flex:1}.mobile-week-agenda{display:none}
+@media(max-width:760px){
+ .calendar-page .board-scroll{max-height:none;overflow:visible}
+ .calendar-page .week-board{display:none}
+ .mobile-week-agenda{display:grid;gap:8px}
+ .week-day-summary{display:flex;align-items:center;text-align:left;gap:16px;min-height:72px;padding:12px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+ .week-day-summary span{display:flex;flex:1;flex-direction:column;gap:5px}.week-day-summary small{color:var(--ink-3)}
+ .calendar-heading .eyebrow{display:none}.calendar-heading h1{font-size:24px}
+ .calendar-page .overview-hero{padding:14px 16px;gap:12px}.calendar-page .hero-pulse{display:none}
+ .calendar-page .hero-metrics{gap:8px}.calendar-page .metric-value b{font-size:28px}
+ .calendar-page .hero-secondary{display:none}
+ .calendar-page .overview-today{flex-direction:row;align-items:center;gap:10px;min-height:32px;width:100%}
+ .calendar-page .overview-today .pending-dot,.calendar-page .overview-today .clear-dot{margin-left:auto}
+ .calendar-page .overview-hero{border-radius:14px}
+ .calendar-page .next-lesson{padding:0;border:0;background:transparent;box-shadow:none}
+ .calendar-page .next-lesson-link{padding:8px 0;min-height:56px}
+ .calendar-page .next-time{border:0;padding-left:0}
+ .calendar-page .workbench-bottom{padding:8px 12px;margin-top:8px;min-height:44px;border-radius:12px}
+ .calendar-toolbar{position:sticky;top:0;z-index:15;background:var(--canvas);padding-block:8px}
+ .calendar-page .schedule-board{overflow:clip}
+ .drawer-close{display:none}.drawer-back{min-height:44px;font-size:14px}
+ .drawer{height:100dvh;box-shadow:none}.drawer-body{min-height:0;overscroll-behavior:contain}
+ .my-page header h1{font-size:24px}.my-page summary{padding:16px 0;min-height:44px}
+}
+/* 触控尺寸下限：主要操作在手机上统一 44px，避免小目标和误触。 */
+@media(max-width:760px){
+ .icon-button{width:44px;min-width:44px;height:44px;min-height:44px}
+ .task-trigger{width:44px;min-width:44px;height:44px;min-height:44px}
+ .overview-today{min-height:44px}
+ .calendar-page .overview-today{min-height:44px}
+ .segmented button{min-height:44px;padding-inline:12px}
+ .calendar-date-nav .icon-button{width:44px;min-width:44px;height:44px;min-height:44px}
+ .calendar-date-nav input{min-height:44px}
+ .today-button{min-height:44px}
+}

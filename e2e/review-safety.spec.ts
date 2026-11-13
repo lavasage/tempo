@@ -1,0 +1,25 @@
+import {test,expect} from '@playwright/test';
+test('清空时间不崩溃，未来完成受阻，反馈返回有保护',async({page})=>{
+ await page.clock.setFixedTime(new Date('2026-11-13T10:30:00+08:00'));
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('/');await page.getByRole('button',{name:'排课',exact:true}).click();
+ await page.getByLabel('上课日期',{exact:true}).fill('');
+ await expect(page.getByRole('alert')).toContainText('日期');
+ await expect(page.getByRole('button',{name:'确认排课',exact:true})).toBeDisabled();
+ await page.getByLabel('上课日期',{exact:true}).fill('2026-11-13');
+ await page.getByLabel('开始时间',{exact:true}).fill('');
+ await expect(page.getByRole('alert')).toContainText('开始时间');
+ page.once('dialog',d=>d.accept());await page.getByRole('button',{name:'返回',exact:true}).click();
+ await page.locator('.timeline-booking').filter({hasText:'陈宇'}).click();
+ await page.getByRole('button',{name:'标记已完成'}).click();
+ await expect(page.getByRole('alert')).toContainText('尚未开始');
+ await page.getByRole('button',{name:'返回',exact:true}).click();
+ await page.locator('.timeline-booking').filter({hasText:'林晓'}).click();
+ await page.getByRole('button',{name:'标记已完成'}).click();
+ await page.getByRole('radio',{name:'4 表现良好'}).check();
+ page.once('dialog',d=>d.dismiss());await page.getByRole('button',{name:'返回',exact:true}).click();
+ await expect(page.getByRole('radio',{name:'4 表现良好'})).toBeChecked();
+ await page.getByRole('button',{name:'保存反馈',exact:true}).click();
+ await page.getByRole('button',{name:'返回',exact:true}).click();
+ await expect(page.locator('.drawer')).toHaveCount(0);expect(errors).toEqual([]);
+});

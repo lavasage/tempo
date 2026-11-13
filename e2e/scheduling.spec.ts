@@ -16,7 +16,7 @@ test('日期切换、创建、修改、冲突拦截、取消、关联与历史',
  const url=page.url();await page.reload();await expect(page.getByLabel('备注')).toHaveValue('M1测试课程');
  await page.getByLabel('开始时间').fill('10:00');
  await page.getByRole('button',{name:'保存修改'}).click();
- await page.getByRole('link',{name:'新建课程',exact:true}).click();
+ await page.goto('/#/'); await page.getByRole('button',{name:'排课',exact:true}).click();
  await page.getByLabel('上课日期').fill('2026-11-12');
  await page.getByLabel('开始时间').fill('10:30');
  await expect(page.getByRole('alert')).toContainText('重叠');
@@ -40,4 +40,5 @@ test('日期切换、创建、修改、冲突拦截、取消、关联与历史',
  await expect(page.locator('.history').filter({hasText:'已取消'})).toHaveCount(1);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
+
 

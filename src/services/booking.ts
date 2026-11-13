@@ -10,9 +10,10 @@ export function validateBooking(b:Booking,all:Booking[]){
  if(b.notes.length>1000)throw Error('课程备注最多 1000 字');
  if(all.some(x=>overlaps(b,x)))throw Error('此时段与已有课程重叠，请选择其他时间');
 }
-export function changeStatus(b:Booking,status:Status):Booking{
+export function changeStatus(b:Booking,status:Status,now=new Date()):Booking{
  if(!transitions[b.status]?.includes(status))throw Error('不允许此状态变更，请先确认预约；已结束课程不可恢复');
- return {...b,status,updated_at:new Date().toISOString()};
+ if(status==='completed'&&(!Number.isFinite(Date.parse(b.start_at))||Date.parse(b.start_at)>now.getTime()))throw Error('课程尚未开始，不能标记完成');
+ return {...b,status,updated_at:now.toISOString()};
 }
 export function saveBooking(b:Booking,all:Booking[]){
  const old=all.find(x=>x.id===b.id);

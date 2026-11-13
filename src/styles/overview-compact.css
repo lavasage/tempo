@@ -1,0 +1,17 @@
+.compact-overview{margin-bottom:12px!important}
+.schedule-hint{display:flex;align-items:center;gap:12px;min-height:44px;border-bottom:1px solid var(--line);position:relative}
+.schedule-hint .overview-today{display:flex;flex-direction:row;align-items:center;gap:4px;min-height:44px;width:auto;font-size:12px;color:var(--ink-2);white-space:nowrap}
+.schedule-hint .hint-next{display:flex;align-items:center;gap:8px;flex:1;min-width:0;padding:0!important;margin:0;min-height:44px;border:0;background:none;box-shadow:none;color:var(--ink-2);font-size:12px;border-radius:0}
+.hint-next span{white-space:nowrap}.hint-next b{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--ink);font-weight:600}
+.hint-empty{flex:1;color:var(--ink-3);font-size:12px}
+.hint-tasks{margin-left:auto}.hint-tasks>summary{display:grid;place-items:center;width:44px;height:44px;padding:0;position:relative;cursor:pointer;list-style:none;color:var(--ink-2)}
+.hint-tasks>summary::-webkit-details-marker{display:none}.hint-tasks>summary::before,.hint-tasks>summary::after{display:none!important}
+.notification-dot{position:absolute;right:9px;top:8px;width:7px;height:7px;border-radius:50%;background:var(--danger,#DC4C50);border:1px solid var(--canvas)}
+.hint-task-list{position:absolute;right:0;top:100%;z-index:35;width:min(370px,calc(100vw - 32px));max-height:60dvh;overflow:auto;overscroll-behavior:contain;background:var(--surface);padding:16px;border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px #20252c18}
+.hint-task-list h3{font-size:14px;margin:0 0 8px}.hint-task-list .work-action{min-height:44px}.hint-task-list .work-item{margin:0}
+.calendar-heading .eyebrow{display:none}
+.task-trigger{position:relative;flex:0 0 44px;width:44px;height:44px;margin-left:auto;border:0;background:transparent}
+.calendar-page .compact-overview .schedule-hint .overview-today{width:auto;flex:0 0 auto;justify-content:flex-start;letter-spacing:normal}
+.calendar-page .compact-overview .schedule-hint .hint-next{width:auto;flex:1 1 0;min-width:0;flex-direction:row;justify-content:flex-start;gap:6px}
+.calendar-page .compact-overview .schedule-hint .hint-tasks{width:44px;flex:0 0 44px;margin:0;position:static}
+.calendar-page .compact-overview .schedule-hint .hint-tasks>summary{width:44px;height:44px;min-height:44px;margin:0;padding:0}

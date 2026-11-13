@@ -80,6 +80,15 @@ describe('M4-B 双教练隔离', () => {
 });
 
 describe('M4-C 时段与事务', () => {
+  it('未来课程拒绝完成且不写完成事件',async()=>{
+    const a=await fixture(db,COACH_A,'甲');
+    const b=await createBooking(db,a.studentId,a.typeId,'2099-11-12T09:00:00+08:00','2099-11-12T10:00:00+08:00');
+    await expectReject(setStatus(b.id,'completed'),'尚未开始');
+    const row=await db.query<{status:string}>('select status from public.bookings where id=$1',[b.id]);
+    expect(row.rows[0]!.status).toBe('confirmed');
+    const events=await db.query<{c:number}>('select count(*)::int c from public.booking_events where booking_id=$1',[b.id]);
+    expect(events.rows[0]!.c).toBe(1);
+  });
   it('建课写入 created 事件，before 为空', async () => {
     const a = await fixture(db, COACH_A, '甲');
     const booking = await createBooking(db, a.studentId, a.typeId, '2026-11-12T09:00:00+08:00', '2026-11-12T10:00:00+08:00');

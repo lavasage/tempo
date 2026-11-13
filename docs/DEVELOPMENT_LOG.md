@@ -196,3 +196,9 @@ E2E：创建→刷新→改期→冲突禁提交→取消→历史关联，以�
 - 适配 Android 15+ 强制边到边：移动端 `.app-main` 与全屏抽屉头部补 `env(safe-area-inset-top)`。
 - 出包链路：`vite build` → `cap copy android` → `gradlew assembleRelease`，release 用自建 keystore 签名（`android/keystore.properties` 不入库，缺失时回退 debug 签名）。
 - 验收：tsc 0 错、单测 110、E2E 40/40、PWA 离线 11 项、APK 签名与元信息校验、包内 `assets/public` 单独起服务跑冒烟全通过。
+
+## P1 验收 + 可靠提交（2026-11-13 晚）
+- 两份 P1 逐条验收，结论写在 `docs/P1_ACCEPTANCE.md`：移动整合 P1 的「无溢出 / 44px 触控 / 弹层返回与焦点」通过，「跨页样式层叠合并」仍未做（629 个选择器里 24 个跨文件重复，`athletic.css` 是 40 行 `!important` 覆盖层）；产品评审 P1 的排课清空抛错、未来课程完成两项此前已修，同步队列丢失本轮修掉，训练指标仍未做。
+- 触控尺寸：`mobile.css` 末尾补 ≤760px 的 44px 块。原来日/周/月 43×32、日期箭头 34×34、今天 50×34、时间设置 40×40、铃铛 44×40，全部提到 44；空档时间槽保持 42 高（由时间轴比例决定）。
+- 可靠提交：新增 `src/services/outbox.ts`（落盘队列 + 尝试次数 + 账号分键 + 损坏降级），`stores/sync.ts` 改为包装 outbox，`boot.ts` 启动时接回未提交操作并在推送成功后重取快照，`App.vue` 待同步文案区分在线/离线，退出登录只断开会话、保留未提交队列。
+- 验证：业务单测 119 项、PGlite 25 项、生产构建、E2E 70 项（5 档尺寸）全通过；探针实测 5 条路由在 360/1440 下无横向溢出。

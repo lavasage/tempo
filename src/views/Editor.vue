@@ -11,6 +11,7 @@ import { validateBooking, validateReferences, labels } from '../services/booking
 import { toneOf } from '../services/courseColors';
 import type { Booking, Status } from '../types';
 import '../styles/editor.css';
+import {bookingStart} from '../services/bookingInput';
 
 const store = useTempo();
 const route = useRoute();
@@ -27,13 +28,14 @@ const notes = ref('');
 const error = ref('');
 const saving = ref(false);
 const baseline = ref('');
+const reviewDirty=ref(false);
 
 /** 抽屉关闭后要回到的课表上下文（日期 + 视图）。 */
 const originDate = ref(String(route.query.date || dateKey()));
 const originView = ref(String(route.query.view || ''));
 
 const state = () => JSON.stringify({student: student.value, type: type.value, date: date.value, start: start.value, duration: duration.value, notes: notes.value});
-const dirty = computed(() => state() !== baseline.value);
+const dirty = computed(() => state() !== baseline.value||reviewDirty.value);
 const locked = computed(() => !!existing.value && ['cancelled', 'completed'].includes(existing.value.status));
 
 watch(
@@ -57,7 +59,7 @@ watch(
 
 function draft(): Booking {
   const now = new Date().toISOString();
-  const s = new Date(date.value + 'T' + start.value);
+  const s = bookingStart(date.value,start.value,duration.value);
   return {
     id: existing.value?.id || crypto.randomUUID(),
     coach_id: store.data.coach.id,
@@ -79,6 +81,7 @@ const typeTone = computed(() => toneOf(store.data.types.find(t => t.id === type.
 
 /** 具体冲突对象：用于把「重叠」说清楚到人和时间。 */
 const clash = computed(() => {
+  if(inputError.value)return null;
   const d = draft();
   return (
     store.data.bookings.find(
@@ -92,7 +95,9 @@ const clash = computed(() => {
   );
 });
 
+const inputError=computed(()=>{try{bookingStart(date.value,start.value,duration.value);return ''}catch(e){return e instanceof Error?e.message:'请填写有效日期和时间'}});
 const conflict = computed(() => {
+  if(inputError.value)return inputError.value;
   const d = draft();
   try {
     validateReferences(store.data, d);
@@ -106,7 +111,7 @@ const conflict = computed(() => {
 });
 
 const alternatives = computed(() => {
-  if (!conflict.value || !date.value) return [];
+  if (!conflict.value || inputError.value) return [];
   const all = availableSlots(store.data, date.value, duration.value, existing.value?.id);
   const wanted = start.value ? Number(start.value.slice(0, 2)) * 60 + Number(start.value.slice(3, 5)) : 0;
   const distance = (t: string) => Math.abs(Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5)) - wanted);
@@ -136,7 +141,9 @@ function close() {
   confirmedLeave = true;
   goBack();
 }
-function goBack() {
+function goBack(restoreOrigin=true) {
+  const previous=window.history.state?.back;
+  if(restoreOrigin&&typeof previous==='string'&&!/(?:#|^)\/(create|booking)(\/|\?|$)/.test(previous)){router.back();return}
   const query: Record<string, string> = {date: originDate.value};
   if (originView.value) query.view = originView.value;
   router.push({path: '/', query});
@@ -164,7 +171,7 @@ function status(s: Status) {
   if (s === 'cancelled' && !confirm('确定取消这节课程？记录将保留。')) return;
   try {
     store.status(existing.value!.id, s);
-    if (s !== 'completed') goBack();
+    if (s !== 'completed') goBack(false);
     else store.notice = '课程已完成，可以填写课后反馈';
   } catch (e) {
     error.value = String(e);
@@ -201,6 +208,7 @@ function onKeydown(event: KeyboardEvent) {
 }
 
 onMounted(async () => {
+  window.addEventListener('beforeunload',protectDraft);
   restoreFocus = document.activeElement as HTMLElement | null;
   document.body.style.overflow = 'hidden';
   window.addEventListener('keydown', onKeydown);
@@ -208,11 +216,13 @@ onMounted(async () => {
   panel.value?.focus();
 });
 onBeforeUnmount(() => {
+  window.removeEventListener('beforeunload',protectDraft);
   document.body.style.overflow = '';
   window.removeEventListener('keydown', onKeydown);
   restoreFocus?.focus?.();
 });
 onBeforeRouteLeave(() => confirmedLeave || !dirty.value || confirm('表单还有未保存的修改，确定离开？'));
+function protectDraft(event:BeforeUnloadEvent){if(dirty.value){event.preventDefault();event.returnValue=''}}
 </script>
 
 <template>
@@ -222,7 +232,7 @@ onBeforeRouteLeave(() => confirmedLeave || !dirty.value || confirm('表单还有
     <aside ref="panel" class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" tabindex="-1" :style="{'--type-bg': typeTone.bg, '--type-ink': typeTone.ink}">
       <header class="drawer-head">
         <div class="drawer-head-main">
-          <button class="text drawer-back" @click="close"><ArrowLeft :size="15" />返回课表</button>
+          <button class="text drawer-back" @click="close"><ArrowLeft :size="15" />返回</button>
           <h1 id="drawer-title">{{ title }}</h1>
           <div class="drawer-sub">
             <StatusBadge v-if="existing" :status="existing.status" size="md" />
@@ -236,7 +246,7 @@ onBeforeRouteLeave(() => confirmedLeave || !dirty.value || confirm('表单还有
         <p v-if="route.params.id && !existing" class="error" role="alert">课程不存在，请返回课表。</p>
 
         <template v-else>
-          <TrainingReview v-if="existing?.status === 'completed'" :key="existing.id" :booking-id="existing.id" />
+          <TrainingReview v-if="existing?.status === 'completed'" :key="existing.id" :booking-id="existing.id" @dirty="reviewDirty=$event" />
 
           <form id="booking-form" class="booking-form" @submit.prevent="save">
             <fieldset :disabled="locked">

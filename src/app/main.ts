@@ -2,6 +2,8 @@ import {createApp} from 'vue';
 import {createPinia} from 'pinia';
 import {createRouter,createWebHashHistory} from 'vue-router';
 import App from './App.vue';
+import My from '../views/My.vue';
+import {bindPlatformNavigation} from '../services/platform';
 import Availability from '../views/Availability.vue';
 import Calendar from '../views/Calendar.vue';
 import StudentEditor from '../views/StudentEditor.vue';
@@ -13,12 +15,18 @@ import {useTempo} from '../stores/tempo';
 import {initPwa} from '../services/pwa';
 import {bootRemote} from './boot';
 import '../styles/main.css';
+import '../styles/mobile.css';
+import '../styles/athletic.css';
+
+const positions=new Map<string,{left:number;top:number}>();
+const rootLocations=new Map<string,string>();
 
 const router=createRouter({
  history:createWebHashHistory(),
- scrollBehavior(to,from,saved){return saved||(to.path===from.path?false:{top:0})},
+ scrollBehavior(to,from,saved){return saved||(to.path===from.path?false:positions.get(to.fullPath)||{top:0})},
  routes:[
   {path:'/login',component:Login},
+  {path:'/my',component:My},
   {path:'/availability',component:Availability},
   // 排课与课程详情是课表的子路由：抽屉打开时课表保持挂载，关闭即回到原上下文。
   {path:'/',component:Calendar,children:[
@@ -44,8 +52,18 @@ router.beforeEach(async to=>{
  return true;
 });
 
+router.beforeEach((to,from)=>{
+ positions.set(from.fullPath,{left:window.scrollX,top:window.scrollY});
+ if(['/', '/students'].includes(from.path)&&!from.query.panel)rootLocations.set(from.path,from.fullPath);
+ if(to.fullPath===to.path&&to.path!==from.path&&rootLocations.has(to.path)){
+   const previous=rootLocations.get(to.path)!;
+   if(previous!==to.fullPath)return previous;
+ }
+});
+
 // 生产构建注册 Service Worker；开发时可用 ?sw=1 手动验证离线。
 initPwa({register:import.meta.env.PROD||location.search.includes('sw=1')});
 
 const app=createApp(App);
 app.use(createPinia()).use(router).mount('#app');
+void router.isReady().then(()=>bindPlatformNavigation(router));

@@ -25,7 +25,7 @@ test('自然周、月历、规则保存与不可约拦截',async({page})=>{
  await page.reload();await expect(page.getByLabel('课程间隔',{exact:true})).toHaveValue('15');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.screenshot({path:`test-results/settings-${test.info().project.name}.png`,fullPage:true});
- await page.getByRole('link',{name:'新建课程',exact:true}).click();
+ await page.goto('/#/'); await page.getByRole('button',{name:'排课',exact:true}).click();
  await page.getByLabel('上课日期',{exact:true}).fill('2026-12-02');
  await page.getByLabel('开始时间',{exact:true}).fill('09:00');
  await expect(page.getByRole('alert')).toContainText('可预约时间');
@@ -35,10 +35,11 @@ test('自然周、月历、规则保存与不可约拦截',async({page})=>{
  await page.getByLabel('开始时间',{exact:true}).fill('14:00');
  await page.getByRole('button',{name:'确认排课',exact:true}).click();
  await expect(page.locator('.timeline-booking')).toHaveCount(1);
- await page.getByRole('link',{name:'新建课程',exact:true}).click();
+ await page.goto('/#/'); await page.getByRole('button',{name:'排课',exact:true}).click();
  await page.getByLabel('上课日期',{exact:true}).fill('2026-12-02');
  await page.getByLabel('开始时间',{exact:true}).fill('15:00');
  await expect(page.getByRole('alert')).toContainText('间隔 15');
  await page.getByLabel('开始时间',{exact:true}).fill('15:15');
  await expect(page.getByRole('button',{name:'确认排课',exact:true})).toBeEnabled();
 });
+

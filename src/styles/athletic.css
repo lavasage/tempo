@@ -1,0 +1,39 @@
+:root{--r-page:10px;--r-card:8px;--r-lg:8px;--r-md:6px;--r-sm:4px}
+.calendar-heading,.students-header,.coach-header{padding:12px 0 16px;border-bottom:2px solid var(--graphite);margin-bottom:8px!important;align-items:center}
+.calendar-heading h1,.students-header h1,.coach-header h1{font-weight:800;letter-spacing:-.03em;font-size:27px}
+.calendar-heading>div:first-child{display:flex;align-items:baseline;gap:12px}.calendar-heading .calendar-month{font-size:12px;color:var(--ink-3)}
+.calendar-heading h1:after{content:'';display:inline-block;width:7px;height:19px;transform:skew(-16deg);background:var(--brand-lime);margin-left:10px}
+.primary{box-shadow:none!important;border-radius:6px!important}
+.schedule-board,.month-board,.calendar-date-nav,.segmented,.profile-pane,.student-editor,.settings-row{border-radius:6px!important;box-shadow:none!important}
+.nav a{border-radius:6px!important}.stats-grid>div{border-radius:4px;box-shadow:none}
+.coach-header{display:flex;justify-content:space-between}.coach-header p{font-size:13px;margin:8px 0 0;color:var(--ink-3)}
+.coach-monogram{display:grid;place-items:center;width:48px;height:48px;background:var(--graphite);color:var(--brand-lime);font-size:26px;font-weight:800;transform:skew(-5deg)}
+.workload{display:grid;grid-template-columns:repeat(3,1fr);padding:22px 0;border-bottom:1px solid var(--line);gap:12px}.workload>div,.workload>a{display:flex;flex-direction:column;gap:8px}.workload span{font-size:12px;color:var(--ink-3)}.workload strong{font-size:30px;font-variant-numeric:tabular-nums}.workload small{font-size:12px;font-weight:400;margin-left:5px}
+.my-page .settings-row{background:none;border-bottom:1px solid var(--line);padding:12px 0;margin:8px 0 24px}
+.feedback-todo{margin-bottom:24px}.feedback-todo h2{font-size:16px}.feedback-todo>a{display:flex;justify-content:space-between;min-height:48px;align-items:center;border-bottom:1px solid var(--line);font-size:13px}
+.my-page .training-stats{border:0;padding:0;background:none;box-shadow:none}.my-page .stats-heading h2{font-size:17px}
+@media(max-width:760px){
+ .calendar-page .week-board{display:block;overflow:clip;border-radius:4px!important}
+ .week-board .board-head,.week-board .board-body{grid-template-columns:32px repeat(7,minmax(0,1fr));min-width:0}
+ .week-board .board-scroll{overflow:visible;max-height:none;min-width:0}
+ .week-board .time-gutter{position:sticky;left:0;z-index:5}.week-board .board-head>span{position:sticky;left:0;background:var(--surface);z-index:5}
+ .week-board .timeline-booking{border-radius:4px;box-shadow:none}.week-board .booking-title b{font-size:12px}.week-board .booking-time{font-size:10px}
+ .calendar-heading h1{font-size:24px}.calendar-heading>div:first-child{gap:8px}.calendar-heading .calendar-month{font-size:11px}
+ .calendar-heading .icon-button{border:0;background:none}.calendar-toolbar{margin-bottom:8px}.calendar-caption{margin:8px 0}
+}
+.calendar-page .calendar-heading{background:var(--graphite);color:white;padding:14px 16px;border:0;border-radius:4px;margin-bottom:0!important;min-height:76px}
+.calendar-page .calendar-heading>div:first-child{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.calendar-page .calendar-heading h1{color:white;font-size:24px;line-height:1.15;letter-spacing:.02em}
+.calendar-page .calendar-heading h1:after{display:none}
+.calendar-page .calendar-heading .calendar-month{color:#b9c0ca;font-size:11px;letter-spacing:.04em}
+.calendar-page .calendar-heading .primary{background:var(--brand-lime);color:var(--graphite);border:0;min-height:44px;padding-inline:16px}
+.calendar-page .calendar-heading .icon-button{color:#e1e6ec;background:transparent;border:0}
+.calendar-page .calendar-heading .heading-actions{gap:8px}
+@media(max-width:760px){
+ .week-board .board-head{padding:4px 0}.week-board .board-head b{width:27px;height:27px;font-size:13px}.week-board .board-head small{font-size:9px}
+ .week-board .time-gutter>span{right:3px;font-size:9px}
+ .week-board .timeline-booking{padding:3px 2px!important;gap:2px!important;min-width:0}
+ .week-board .booking-title b{font-size:10px;line-height:1.25;white-space:normal;overflow-wrap:anywhere}
+ .week-board .booking-time{font-size:8px;letter-spacing:-.03em}
+ .week-board .booking-warn{display:none}
+}

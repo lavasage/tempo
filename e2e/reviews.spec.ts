@@ -17,8 +17,8 @@ test('完成课程、评分、修改、刷新与学员统计',async({page})=>{
  await page.getByRole('radio',{name:'5 表现出色'}).check();
  await page.getByRole('button',{name:'更新反馈'}).click();
  await page.screenshot({path:`test-results/review-${test.info().project.name}.png`,fullPage:true});
- await page.getByRole('button',{name:'返回课表',exact:false}).click();
- await page.locator('.calendar-review > summary').click();
+ await page.getByRole('button',{name:'返回',exact:true}).click();
+ await page.getByRole('link',{name:'我的',exact:true}).click();
  await expect(page.locator('.training-stats')).toContainText('5.0');
  await expect(page.locator('.training-stats')).toContainText('已评 1 / 1');
  await page.getByRole('link',{name:'学员',exact:true}).click();
@@ -28,5 +28,6 @@ test('完成课程、评分、修改、刷新与学员统计',async({page})=>{
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
  await page.screenshot({path:`test-results/student-${test.info().project.name}.png`,fullPage:true});
 });
+
 
 
