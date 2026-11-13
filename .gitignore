@@ -20,3 +20,19 @@ android/capacitor-cordova-android-plugins/
 # 构建产物
 *.apk
 *.aab
+
+# 微信小程序代码上传密钥（在小程序后台生成下载，绝不入库）
+weapp/private.*.key
+weapp/*.key
+
+# 本地评审、过程记录和生成的预览
+/docs/*
+!/docs/open-source-research.md
+!/docs/M4_MIGRATION.md
+!/docs/M5_PWA.md
+!/docs/ANDROID_RELEASE.md
+/产品评审_用户视角.md
+/weapp/上线手册.md
+/weapp/tools/.preview/
+/release/
+/scripts/tmp-*
