@@ -31,9 +31,10 @@ function when(start: string) {
   return (dateKey(new Date(start)) === overview.value.today ? '今天' : new Date(start).toLocaleDateString('zh-CN', {month: 'numeric', day: 'numeric'})) + ' ' + time(start);
 }
 function change(id: string, status: Status) {
+  const booking = store.data.bookings.find(b => b.id === id);
   try {
     store.status(id, status);
-    store.notice = status === 'completed' ? '课程已完成' : '预约已确认';
+    store.notice = status !== 'completed' ? '预约已确认' : booking?.package_id ? '课程已完成，已扣 1 节课时' : '课程已完成';
     error.value = '';
   } catch (e) {
     error.value = e instanceof Error ? e.message : '操作失败，请重试';

@@ -13,7 +13,7 @@ function snapshot(overrides:Partial<SnapshotJson>={}):SnapshotJson{
   coach:{id:'coach-1',name:'甲教练',email:'a@tempo.test',created_at:'2026-11-01T00:00:00Z'},
   students:[{id:'s1',coach_id:'coach-1',name:'林晓',phone:'13800000001',notes:'',preferences:['t1'],created_at:'2026-11-01T00:00:00Z'}],
   types:[{id:'t1',name:'力量训练',default_duration:60,color:'#e6eee5'}],
-  bookings:[{id:'b1',coach_id:'coach-1',student_id:'s1',course_type_id:'t1',start_at:'2026-11-12T01:00:00Z',end_at:'2026-11-12T02:00:00Z',status:'confirmed',notes:'',created_at:'2026-11-01T00:00:00Z',updated_at:'2026-11-01T00:00:00Z'}],
+  bookings:[{id:'b1',coach_id:'coach-1',student_id:'s1',course_type_id:'t1',start_at:'2026-11-12T01:00:00Z',end_at:'2026-11-12T02:00:00Z',status:'confirmed',notes:'',package_id:null,created_at:'2026-11-01T00:00:00Z',updated_at:'2026-11-01T00:00:00Z'}],
   reviews:[],
   events:[],
   availability:{buffer_minutes:15,rules:[

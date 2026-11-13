@@ -1,5 +1,6 @@
 import type {Booking,Status,Database,BookingEvent} from '../types';
 import {availabilityError} from './availability';
+import {packageError} from './packages';
 export const labels:Record<Status,string>={pending:'待确认',confirmed:'已确认',completed:'已完成',cancelled:'已取消'};
 const transitions:Record<Status,Status[]>={pending:['confirmed','cancelled'],confirmed:['completed','cancelled'],completed:[],cancelled:[]};
 export function overlaps(a:Booking,b:Booking){return a.id!==b.id&&a.coach_id===b.coach_id&&a.status!=='cancelled'&&b.status!=='cancelled'&&Date.parse(a.start_at)<Date.parse(b.end_at)&&Date.parse(b.start_at)<Date.parse(a.end_at)}
@@ -35,6 +36,8 @@ export function saveBookingRecord(data:Database,b:Booking){
  validateReferences(data,b);const old=data.bookings.find(x=>x.id===b.id)??null;
  const updated={...b,updated_at:new Date().toISOString()};
  const bookings=saveBooking(updated,data.bookings);
+ const packageIssue=packageError(data,updated);
+ if(packageIssue)throw Error(packageIssue);
  const unavailable=availabilityError(data,updated.start_at,updated.end_at,old?.id);
  if(unavailable)throw Error(unavailable);
  return event({...data,bookings},old,updated,old?'edited':'created');
@@ -42,9 +45,12 @@ export function saveBookingRecord(data:Database,b:Booking){
 export function setBookingStatus(data:Database,id:string,status:Status){
  const old=data.bookings.find(b=>b.id===id);if(!old)throw Error('课程不存在');
  validateReferences(data,old);const updated=changeStatus(old,status);
+ // 待确认不占课；确认时既要守住时段，也要守住套餐余额。
  if(status==='confirmed'){
   const unavailable=availabilityError(data,updated.start_at,updated.end_at,updated.id);
   if(unavailable)throw Error(unavailable);
+  const packageIssue=packageError(data,updated);
+  if(packageIssue)throw Error(packageIssue);
  }
  return event({...data,bookings:data.bookings.map(b=>b.id===id?updated:b)},old,updated,'status');
 }

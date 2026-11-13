@@ -283,6 +283,137 @@
 }
 
 /* ---------- Next lesson ---------- */
+/* ---------- 套餐课时 ---------- */
+.profile-packages {
+  margin-top: var(--sp-4);
+}
+
+.packages-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.packages-heading h3 {
+  font-size: 0.92rem;
+}
+
+.package-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.package-card {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+}
+
+.package-card.low {
+  border-color: var(--warning-line);
+  background: color-mix(in srgb, var(--warning-soft) 55%, var(--surface));
+}
+
+.package-card.expired {
+  background: var(--surface-muted);
+  box-shadow: none;
+}
+
+.package-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.package-card-head b {
+  font-size: 0.86rem;
+  font-weight: var(--weight-semibold);
+}
+
+.package-card-head span {
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+
+.package-balance {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.package-balance b {
+  font-size: 1.5rem;
+  font-weight: var(--weight-semibold);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.package-balance span {
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.package-balance small {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.package-meta {
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.package-flag {
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+  color: var(--ink-3);
+}
+
+.package-renew {
+  justify-self: start;
+  min-height: 32px;
+  padding: 0;
+}
+
+.package-empty {
+  margin-top: 8px;
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--ink-3);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-lg);
+}
+
+/* 登记/续购表单在弹层里 */
+.package-form {
+  display: grid;
+  gap: 12px;
+  padding: 4px 0 8px;
+}
+
+.package-note {
+  margin-top: -6px;
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.package-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+}
+
 .profile-next {
   display: flex;
   align-items: center;

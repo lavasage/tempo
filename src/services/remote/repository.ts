@@ -1,6 +1,6 @@
-import type {AvailabilitySettings, Booking, CourseType, Database, Status, Student, TrainingReview} from '../../types';
+import type {AvailabilitySettings, Booking, CourseType, Database, LessonPackage, Status, Student, TrainingReview} from '../../types';
 import type {ApiClient} from './client';
-import {availabilityPayload, decodeSnapshot, reviewRow, studentRow, typeRow, type SnapshotJson} from './mapping';
+import {availabilityPayload, decodeSnapshot, packagePayload, reviewRow, studentRow, typeRow, type SnapshotJson} from './mapping';
 
 /**
  * 远端仓库：所有写操作走 RPC/PostgREST，错误由数据库约束产生。
@@ -26,7 +26,8 @@ export function createRemoteRepository(client: ApiClient) {
         p_end: booking.end_at,
         p_notes: booking.notes,
         p_request: booking.id,
-        p_status: booking.status
+        p_status: booking.status,
+        p_package: booking.package_id
       });
     },
     async updateBooking(booking: Booking) {
@@ -35,7 +36,10 @@ export function createRemoteRepository(client: ApiClient) {
         p_start: booking.start_at,
         p_end: booking.end_at,
         p_type: booking.course_type_id,
-        p_notes: booking.notes
+        p_notes: booking.notes,
+        p_package: booking.package_id,
+        // 显式声明「套餐归属以这次提交为准」，否则服务端会保留原值。
+        p_package_set: true
       });
     },
     async setStatus(id: string, status: Status) {
@@ -46,6 +50,13 @@ export function createRemoteRepository(client: ApiClient) {
     },
     async saveAvailability(settings: AvailabilitySettings) {
       await client.rpc('save_availability', availabilityPayload(settings));
+    },
+    /** 套餐 id 由客户端生成：重放只会在服务端命中同一份记录，不会建成两份。 */
+    async savePackage(pkg: LessonPackage) {
+      await client.rpc('package_save', packagePayload(pkg));
+    },
+    async revertLesson(bookingId: string, reason: string) {
+      await client.rpc('lesson_revert', {p_booking: bookingId, p_reason: reason});
     }
   };
 }

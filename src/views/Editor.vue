@@ -9,6 +9,7 @@ import { useTempo } from '../stores/tempo';
 import { dateKey, time } from '../composables/date';
 import { validateBooking, validateReferences, labels } from '../services/booking';
 import { toneOf } from '../services/courseColors';
+import { consumeOf, defaultPackage, hasRefund, matchingPackages, packageError, summarize, txLabels } from '../services/packages';
 import type { Booking, Status } from '../types';
 import '../styles/editor.css';
 import {bookingStart} from '../services/bookingInput';
@@ -25,6 +26,9 @@ const date = ref('');
 const start = ref('');
 const duration = ref(60);
 const notes = ref('');
+const packageId = ref('');
+const revertOpen = ref(false);
+const revertReason = ref('');
 const error = ref('');
 const saving = ref(false);
 const baseline = ref('');
@@ -34,7 +38,7 @@ const reviewDirty=ref(false);
 const originDate = ref(String(route.query.date || dateKey()));
 const originView = ref(String(route.query.view || ''));
 
-const state = () => JSON.stringify({student: student.value, type: type.value, date: date.value, start: start.value, duration: duration.value, notes: notes.value});
+const state = () => JSON.stringify({student: student.value, type: type.value, date: date.value, start: start.value, duration: duration.value, notes: notes.value, package: packageId.value});
 const dirty = computed(() => state() !== baseline.value||reviewDirty.value);
 const locked = computed(() => !!existing.value && ['cancelled', 'completed'].includes(existing.value.status));
 
@@ -48,6 +52,9 @@ watch(
     start.value = b ? time(b.start_at) : String(route.query.time || '09:00');
     duration.value = b ? (Date.parse(b.end_at) - Date.parse(b.start_at)) / 60000 : (store.data.types.find(t => t.id === type.value)?.default_duration ?? 60);
     notes.value = b?.notes || '';
+    packageId.value = b?.package_id || '';
+    revertOpen.value = false;
+    revertReason.value = '';
     error.value = '';
     saving.value = false;
     baseline.value = state();
@@ -69,6 +76,7 @@ function draft(): Booking {
     end_at: new Date(s.getTime() + duration.value * 60000).toISOString(),
     status: existing.value?.status || 'confirmed',
     notes: notes.value,
+    package_id: packageId.value || null,
     created_at: existing.value?.created_at || now,
     updated_at: now
   };
@@ -78,6 +86,49 @@ const studentName = (id: string) => store.data.students.find(s => s.id === id)?.
 const typeName = (id: string) => store.data.types.find(t => t.id === id)?.name ?? '';
 /** 当前课程类型的浅底与深字，抽屉与课表卡片共用同一套 token。 */
 const typeTone = computed(() => toneOf(store.data.types.find(t => t.id === type.value)));
+
+/** 可选的套餐：学员 + 课程类型 + 上课日匹配，且还有余额。 */
+const packageOptions = computed(() => {
+  if (!student.value || !type.value || !date.value) return [];
+  return matchingPackages(store.data, student.value, type.value, date.value);
+});
+/** 已有课程关联的套餐可能已经不在可选项里（过期或排满），仍需显示它的余额。 */
+const chosenSummary = computed(() => {
+  if (!packageId.value) return null;
+  const pkg = store.data.packages.find(p => p.id === packageId.value);
+  return pkg ? summarize(store.data, pkg) : null;
+});
+const packageHint = computed(() => {
+  if (!packageId.value) {
+    return student.value && date.value && !packageOptions.value.length ? '这位学员暂时没有可用套餐，按不计套餐记录。' : '';
+  }
+  const s = chosenSummary.value;
+  if (!s) return '';
+  return `完成后扣 1 节：剩余 ${s.remaining} → ${s.remaining - 1} 节，还可约 ${Math.max(0, s.available - 1)} 节`;
+});
+const consume = computed(() => (existing.value ? consumeOf(store.data, existing.value.id) : null));
+const refund = computed(() => (consume.value ? store.data.lesson_tx.find(t => t.booking_id === existing.value!.id && t.kind === 'refund') ?? null : null));
+const consumePackageName = computed(() => store.data.packages.find(p => p.id === consume.value?.package_id)?.name ?? '');
+
+/** 新建课程时自动选中最早到期且还能约的套餐；手动选过就不再覆盖。 */
+watch([student, type, date], () => {
+  if (existing.value || !student.value || !type.value || !date.value) return;
+  if (packageId.value && packageOptions.value.some(o => o.pkg.id === packageId.value)) return;
+  packageId.value = defaultPackage(store.data, student.value, type.value, date.value);
+});
+
+function revert() {
+  if (!existing.value) return;
+  try {
+    store.revertLesson(existing.value.id, revertReason.value);
+    revertOpen.value = false;
+    revertReason.value = '';
+    error.value = '';
+    store.notice = '已撤销这次扣课';
+  } catch (e) {
+    error.value = e instanceof Error ? e.message : '撤销失败，请重试';
+  }
+}
 
 /** 具体冲突对象：用于把「重叠」说清楚到人和时间。 */
 const clash = computed(() => {
@@ -102,6 +153,8 @@ const conflict = computed(() => {
   try {
     validateReferences(store.data, d);
     validateBooking(d, store.data.bookings);
+    const packageIssue = packageError(store.data, d);
+    if (packageIssue) throw Error(packageIssue);
   } catch (e) {
     if (clash.value) return `与 ${studentName(clash.value.student_id)} ${time(clash.value.start_at)}–${time(clash.value.end_at)} 的课程重叠`;
     return e instanceof Error ? e.message : '请填写有效日期和时间';
@@ -172,7 +225,7 @@ function status(s: Status) {
   try {
     store.status(existing.value!.id, s);
     if (s !== 'completed') goBack(false);
-    else store.notice = '课程已完成，可以填写课后反馈';
+    else store.notice = chosenSummary.value ? `课程已完成，已扣 1 节课时，剩余 ${chosenSummary.value.remaining} 节` : '课程已完成，可以填写课后反馈';
   } catch (e) {
     error.value = String(e);
   }
@@ -262,6 +315,17 @@ function protectDraft(event:BeforeUnloadEvent){if(dirty.value){event.preventDefa
                 </select>
               </label>
 
+              <label for="booking-package">套餐课时
+                <select id="booking-package" v-model="packageId">
+                  <option value="">不计套餐（体验课 / 单次课）</option>
+                  <option v-for="o in packageOptions" :key="o.pkg.id" :value="o.pkg.id">{{ o.pkg.name }} · 还可约 {{ o.available }} 节</option>
+                  <option v-if="packageId && !packageOptions.some(o => o.pkg.id === packageId)" :value="packageId">
+                    {{ chosenSummary?.pkg.name ?? '已关联套餐' }}（已排满或已过期）
+                  </option>
+                </select>
+              </label>
+              <p v-if="packageHint" class="package-hint" data-testid="package-hint">{{ packageHint }}</p>
+
               <div class="form-row">
                 <label for="booking-date">上课日期
                   <input id="booking-date" type="date" v-model="date" required />
@@ -300,6 +364,33 @@ function protectDraft(event:BeforeUnloadEvent){if(dirty.value){event.preventDefa
             <p v-if="error" class="error" role="alert">{{ error }}</p>
           </form>
 
+          <details v-if="existing?.status === 'completed'" class="lesson-ledger">
+            <summary>课时扣减</summary>
+            <template v-if="consume">
+              <p class="ledger-row">
+                <b>{{ txLabels[consume.kind] }} −1 节</b>
+                <small>{{ consumePackageName }} · {{ new Date(consume.created_at).toLocaleString('zh-CN') }}</small>
+              </p>
+              <p v-if="refund" class="ledger-row refund">
+                <b>{{ txLabels[refund.kind] }} +1 节</b>
+                <small>{{ refund.reason }} · {{ new Date(refund.created_at).toLocaleString('zh-CN') }}</small>
+              </p>
+              <template v-else>
+                <button v-if="!revertOpen" class="text" type="button" @click="revertOpen = true">撤销扣课</button>
+                <div v-else class="revert-form">
+                  <label for="revert-reason">更正原因
+                    <input id="revert-reason" v-model="revertReason" maxlength="200" placeholder="例如：误点完成、课程改期" />
+                  </label>
+                  <div class="revert-actions">
+                    <button class="primary" type="button" @click="revert">确认撤销</button>
+                    <button class="text" type="button" @click="revertOpen = false; revertReason = ''">取消</button>
+                  </div>
+                </div>
+              </template>
+            </template>
+            <p v-else class="muted">这节课没有扣课时：未关联套餐，或当时的课程不计套餐。</p>
+          </details>
+
           <details v-if="existing" class="event-log">
             <summary>课程变更记录</summary>
             <p v-if="!store.data.booking_events.some(e => e.booking_id === existing?.id)" class="muted">暂无变更记录；升级前的操作未记录。</p>
@@ -318,7 +409,7 @@ function protectDraft(event:BeforeUnloadEvent){if(dirty.value){event.preventDefa
         <template v-if="!locked">
           <div class="foot-secondary">
             <button v-if="existing?.status === 'pending'" type="button" @click="status('confirmed')">确认预约</button>
-            <button v-if="existing?.status === 'confirmed'" type="button" @click="status('completed')">标记已完成</button>
+            <button v-if="existing?.status === 'confirmed'" type="button" @click="status('completed')">标记已完成{{ chosenSummary ? '（扣 1 节）' : '' }}</button>
             <button v-if="existing" type="button" class="danger" @click="status('cancelled')">取消预约</button>
           </div>
           <button class="primary foot-save" type="submit" form="booking-form" :disabled="!!conflict || saving">

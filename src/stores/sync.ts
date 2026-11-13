@@ -37,6 +37,8 @@ export const useSync=defineStore('sync',()=>{
    case 'booking.status':return r.setStatus(op.id,op.status);
    case 'review.save':return r.saveReview(op.review);
    case 'availability.save':return r.saveAvailability(op.settings);
+   case 'package.save':return r.savePackage(op.pkg);
+   case 'lesson.revert':return r.revertLesson(op.bookingId,op.reason);
   }
  }
 

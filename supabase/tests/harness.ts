@@ -4,7 +4,7 @@ import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
-export const MIGRATIONS = ['0001_schema.sql', '0002_rls.sql', '0003_guard.sql', '0004_client.sql', '0005_student_goal.sql', '0006_completion_time.sql'];
+export const MIGRATIONS = ['0001_schema.sql', '0002_rls.sql', '0003_guard.sql', '0004_client.sql', '0005_student_goal.sql', '0006_completion_time.sql', '0007_lesson_packages.sql'];
 export const COACH_A = '11111111-1111-1111-1111-111111111111';
 export const COACH_B = '22222222-2222-2222-2222-222222222222';
 
@@ -100,13 +100,41 @@ export async function createBooking(
   typeId: string,
   start: string,
   end: string,
-  extra: {notes?: string; status?: string; request?: string} = {}
+  extra: {notes?: string; status?: string; request?: string; packageId?: string} = {}
 ) {
   const row = await db.query<{ booking_create: Record<string, unknown> }>(
-    `select public.booking_create($1,$2,$3::timestamptz,$4::timestamptz,$5,$6::uuid,$7::public.booking_status)`,
-    [studentId, typeId, start, end, extra.notes ?? '', extra.request ?? null, extra.status ?? 'confirmed']
+    `select public.booking_create($1,$2,$3::timestamptz,$4::timestamptz,$5,$6::uuid,$7::public.booking_status,$8::uuid)`,
+    [studentId, typeId, start, end, extra.notes ?? '', extra.request ?? null, extra.status ?? 'confirmed', extra.packageId ?? null]
   );
   return row.rows[0]!.booking_create;
+}
+
+/** 登记一份套餐：总节数、期初已用、可选有效期。 */
+export async function createPackage(
+  db: PGlite,
+  studentId: string,
+  typeId: string | null,
+  total: number,
+  initial = 0,
+  expires: string | null = null,
+  id: string = crypto.randomUUID()
+) {
+  const row = await db.query<{ package_save: Record<string, unknown> }>(
+    `select public.package_save($1::uuid,$2::uuid,$3::uuid,$4,$5::int,$6::int,$7::date,$8::date,$9)`,
+    [id, studentId, typeId, '私教 ' + total + ' 节', total, initial, '2026-11-01', expires, '']
+  );
+  return {id, row: row.rows[0]!.package_save};
+}
+
+/** 余额 = 流水求和；占用 = 已确认且未完成的课程数。 */
+export async function packageState(db: PGlite, packageId: string) {
+  const balance = await db.query<{ c: number }>(
+    `select coalesce(sum(quantity),0)::int c from public.lesson_transactions where package_id=$1`, [packageId]
+  );
+  const occupied = await db.query<{ c: number }>(
+    `select count(*)::int c from public.bookings where package_id=$1 and status='confirmed'`, [packageId]
+  );
+  return {remaining: balance.rows[0]!.c, occupied: occupied.rows[0]!.c};
 }
 
 export async function expectReject(promise: Promise<unknown>, fragment: string) {

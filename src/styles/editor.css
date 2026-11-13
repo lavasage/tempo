@@ -290,6 +290,69 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* ---------- 套餐（排课与扣课） ---------- */
+.package-hint {
+  margin-top: -4px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+.lesson-ledger {
+  border-top: 1px solid var(--line);
+  padding-top: 4px;
+}
+
+.lesson-ledger > summary {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  font-size: 0.8rem;
+  font-weight: var(--weight-semibold);
+  color: var(--ink-2);
+  cursor: pointer;
+  list-style: none;
+}
+
+.lesson-ledger > summary::-webkit-details-marker {
+  display: none;
+}
+
+.ledger-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 0;
+  border-top: 1px solid var(--line);
+}
+
+.ledger-row b {
+  font-size: 12.5px;
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.ledger-row small {
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+
+.ledger-row.refund b {
+  color: var(--ink-2);
+}
+
+.revert-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.revert-actions {
+  display: flex;
+  gap: 8px;
+}
+
 /* ---------- Footer ---------- */
 .drawer-foot {
   display: flex;

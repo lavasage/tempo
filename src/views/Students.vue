@@ -5,12 +5,15 @@ import {useNavigation} from '../stores/navigation';
 import { useRoute } from 'vue-router';
 import { Plus, Search, ChevronRight, ArrowLeft, Pencil, Phone, SlidersHorizontal, X, CalendarPlus, Target, StickyNote, Users } from 'lucide-vue-next';
 import TrainingStats from '../components/TrainingStats.vue';
+import PackageSheet from '../components/PackageSheet.vue';
 import { StatusBadge, PulseMark } from '../components/ui';
 import { useTempo } from '../stores/tempo';
 import { labels } from '../services/booking';
 import { toneOf } from '../services/courseColors';
+import { studentPackages } from '../services/packages';
 import { searchStudents, studentSummary, filterStudentCourses, type CourseFilter, type StudentCourseFilters } from '../services/students';
 import { useNow } from '../composables/useNow';
+import type { LessonPackage } from '../types';
 import { time } from '../composables/date';
 import '../styles/students.css';
 
@@ -46,6 +49,16 @@ const nextLesson = computed(() => {
       .sort((a, b) => a.start_at.localeCompare(b.start_at))[0] ?? null
   );
 });
+
+const packages = computed(() => (student.value ? studentPackages(store.data, student.value.id, new Date(now.value)) : []));
+
+/** 登记与续购共用一张表单：续购沿用名称与课程类型，作为新的一次购买。 */
+const packageOpen = ref(false);
+const packageBase = ref<LessonPackage | null>(null);
+function openPackage(base: LessonPackage | null = null) {
+  packageBase.value = base;
+  packageOpen.value = true;
+}
 
 const dateLabel = (date: string) => new Date(date).toLocaleDateString('zh-CN', {month: 'numeric', day: 'numeric'});
 const fullDate = (date: string) => new Date(date).toLocaleDateString('zh-CN', {month: 'long', day: 'numeric', weekday: 'short'});
@@ -147,6 +160,38 @@ watch(selected, () => {
           </template>
         </div>
 
+        <section class="profile-packages" aria-label="套餐课时">
+          <div class="packages-heading">
+            <h3>套餐课时</h3>
+            <button class="text" type="button" @click="openPackage()">登记套餐</button>
+          </div>
+
+          <div v-if="packages.length" class="package-list">
+            <article
+              v-for="p in packages"
+              :key="p.pkg.id"
+              class="package-card"
+              :class="{low: !p.expired && p.available <= 1, expired: p.expired}"
+            >
+              <div class="package-card-head">
+                <b>{{ p.pkg.name }}</b>
+                <span>{{ p.pkg.course_type_id ? typeName(p.pkg.course_type_id) : '全部课程' }}</span>
+              </div>
+              <p class="package-balance">
+                <b data-testid="package-remaining">{{ p.remaining }}</b><span>节剩余</span>
+                <small>共 {{ p.total }} · 已上 {{ p.used }}</small>
+              </p>
+              <p class="package-meta">
+                其中已占用 {{ p.occupied }} 节，还可约 {{ p.available }} 节<template v-if="p.pkg.expires_on"> · 有效期至 {{ p.pkg.expires_on }}</template>
+              </p>
+              <p v-if="p.expired" class="package-flag">已过期</p>
+              <button v-else-if="p.available <= 1" class="text package-renew" type="button" @click="openPackage(p.pkg)">续购</button>
+            </article>
+          </div>
+
+          <p v-else class="package-empty">还没有登记套餐。可以先按不计套餐排课，之后再补登。</p>
+        </section>
+
         <dl class="profile-summary">
           <div>
             <dt>已完成</dt>
@@ -239,6 +284,14 @@ watch(selected, () => {
           <summary>训练回顾</summary>
           <TrainingStats :key="student.id" :student-id="student.id" />
         </details>
+
+        <PackageSheet
+          :open="packageOpen"
+          :student-id="student.id"
+          :student-name="student.name"
+          :based-on="packageBase"
+          @close="packageOpen = false"
+        />
       </section>
 
       <section v-else-if="selected" class="profile-pane">

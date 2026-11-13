@@ -5,6 +5,7 @@ import {repository} from '../repositories/local';
 import {seed} from '../mock/seed';
 import {saveBookingRecord,setBookingStatus} from '../services/booking';
 import {saveReview,type ReviewInput} from '../services/reviews';
+import {consumeLesson,revertLesson as revertLessonRecord,savePackage,type PackageInput} from '../services/packages';
 import {validateAvailability} from '../services/availability';
 import {createStudent,updateStudent,type StudentInput} from '../services/students';
 import {remoteConfig} from '../services/remote/config';
@@ -41,7 +42,12 @@ export const useTempo=defineStore('tempo',()=>{
   editStudent(id:string,input:StudentInput){assertWritable();const next=updateStudent(data.value,id,input);commit(next);notice.value='学员已保存';record({kind:'student.save',student:next.students.find(s=>s.id===id)!})},
   saveAvailability(settings:AvailabilitySettings){assertWritable();validateAvailability(settings);const next={...data.value,availability:JSON.parse(JSON.stringify(settings)) as AvailabilitySettings};commit(next);record({kind:'availability.save',settings:next.availability})},
   save(b:Booking){assertWritable();const exists=data.value.bookings.some(x=>x.id===b.id);const next=saveBookingRecord(data.value,b);commit(next);const saved=next.bookings.find(x=>x.id===b.id)!;record(exists?{kind:'booking.update',booking:saved}:{kind:'booking.create',booking:saved})},
-  status(id:string,status:Status){assertWritable();const next=setBookingStatus(data.value,id,status);commit(next);record({kind:'booking.status',id,status})},
+  /** 完成课程与扣课时是同一次提交：先在本地扣，再让服务端在同一事务里确认。 */
+  status(id:string,status:Status){assertWritable();let next=setBookingStatus(data.value,id,status);if(status==='completed')next=consumeLesson(next,id);commit(next);record({kind:'booking.status',id,status})},
+  /** 登记或续购：每次购买独立建档，写购买与期初已用两条流水。 */
+  addPackage(input:PackageInput,id:string){assertWritable();const next=savePackage(data.value,input,id);commit(next);record({kind:'package.save',pkg:next.packages.find(p=>p.id===id)!});return next.packages.find(p=>p.id===id)!},
+  /** 撤销误扣：保留原扣减，追加冲正流水。 */
+  revertLesson(id:string,reason:string){assertWritable();const next=revertLessonRecord(data.value,id,reason);commit(next);record({kind:'lesson.revert',bookingId:id,reason})},
   review(id:string,input:ReviewInput){assertWritable();const next=saveReview(data.value,id,input);commit(next);record({kind:'review.save',review:next.reviews.find(r=>r.booking_id===id)!})},
   /** 登录后一次性替换为服务端快照；cached 非 0 表示来自离线缓存。 */
   replaceData(next:Database,cached=0){repo.save(next);data.value=next;hydrated.value=true;blocked.value=false;error.value='';cachedAt.value=cached},

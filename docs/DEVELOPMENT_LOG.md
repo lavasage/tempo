@@ -202,3 +202,13 @@ E2E：创建→刷新→改期→冲突禁提交→取消→历史关联，以�
 - 触控尺寸：`mobile.css` 末尾补 ≤760px 的 44px 块。原来日/周/月 43×32、日期箭头 34×34、今天 50×34、时间设置 40×40、铃铛 44×40，全部提到 44；空档时间槽保持 42 高（由时间轴比例决定）。
 - 可靠提交：新增 `src/services/outbox.ts`（落盘队列 + 尝试次数 + 账号分键 + 损坏降级），`stores/sync.ts` 改为包装 outbox，`boot.ts` 启动时接回未提交操作并在推送成功后重取快照，`App.vue` 待同步文案区分在线/离线，退出登录只断开会话、保留未提交队列。
 - 验证：业务单测 119 项、PGlite 25 项、生产构建、E2E 70 项（5 档尺寸）全通过；探针实测 5 条路由在 360/1440 下无横向溢出。
+
+## 套餐课时闭环 + Android 1.2.0（2026-11-13 深夜）
+- 数据模型：`LessonPackage`（每次购买独立建档：总节数、期初已用、单价、有效期、状态）与 `LessonTransaction`（purchase / consume / refund / adjust 四类流水）；`Booking.package_id` 为空即「不计套餐」。
+- 余额口径统一到 `src/services/packages.ts`：剩余 = Σ流水，已上 = 总 − 剩余，占用 = 已确认未完成课程数，可约 = 剩余 − 占用。全部是纯函数，UI 与测试共用一套算法。
+- 本地闭环：`booking` 状态改 completed 时原子扣 1 节；`revertLesson` 追加冲正流水而不是改历史；`savePackage` 客户端生成 id，重放幂等。`outbox` 新增 `package.save` / `lesson.revert` 两类操作，离线也能排队。
+- 服务端：`0007_lesson_packages.sql` 把扣课放进 `booking_set_status` 同一事务，按套餐加咨询锁防并发超扣；`(package_id, coach_id)` 复合外键挡住跨教练关联；`package_save` 以客户端 id 做 upsert 幂等；快照带上 packages / lesson_tx。
+- UI：排课抽屉加「套餐课时」下拉（只列同学员、同类型、日期在有效期内的套餐）+ 扣课提示 + 扣课流水与撤销表单；学员档案加套餐卡（剩余/已上/占用/可约/到期/续购）与登记/续购弹层 `PackageSheet.vue`。
+- 验证：`vue-tsc` 0 错；业务单测 128 项、PGlite 36 项、E2E 85 项（5 档尺寸）全通过。E2E 里补了两处真实约束：抽屉改过状态后表单是 dirty，离开会弹确认，用例需 `page.on('dialog')` 放行；移动端进入档案后列表被隐藏，换学员要先退回列表。
+- 已知边界：客户端仍是「先乐观写入再排队」，服务端拒扣时界面会停在「待同步」；补「按请求 id 查询结果」接口之前不宣称强一致。
+- 出包：versionCode 3 / versionName 1.2.0，`release/Tempo-1.2.0.apk`，release keystore 签名（CN=Tempo，SHA-1 `1f3f6b0a…`）。

@@ -1,5 +1,6 @@
 import type {
   AvailabilitySettings, BlockedTime, Booking, BookingEvent, Coach, CourseType, Database,
+  LessonPackage, LessonTransaction, LessonTxKind,
   Status, Student, TrainingReview, WeeklyWindow
 } from '../../types';
 import {defaultAvailability} from '../availability';
@@ -10,7 +11,9 @@ export interface SnapshotJson {
   coach: {id: string; name: string; email: string; created_at: string} | null;
   students: {id: string; coach_id: string; name: string; phone: string; notes: string; preferences: string[]; created_at: string}[];
   types: {id: string; name: string; default_duration: number; color: string}[];
-  bookings: {id: string; coach_id: string; student_id: string; course_type_id: string; start_at: string; end_at: string; status: Status; notes: string; created_at: string; updated_at: string}[];
+  bookings: {id: string; coach_id: string; student_id: string; course_type_id: string; start_at: string; end_at: string; status: Status; notes: string; package_id?: string | null; created_at: string; updated_at: string}[];
+  packages?: {id: string; coach_id: string; student_id: string; course_type_id: string | null; name: string; total_sessions: number; initial_used: number; purchased_on: string; expires_on: string | null; notes: string; created_at: string}[];
+  lesson_tx?: {id: string; coach_id: string; package_id: string; booking_id: string | null; kind: LessonTxKind; quantity: number; reason: string; created_at: string}[];
   reviews: {id: string; booking_id: string; coach_id: string; rating: number; effort: number | null; actual_minutes: number; notes: string; created_at: string; updated_at: string}[];
   events: {id: string; booking_id: string; coach_id: string; kind: BookingEvent['kind']; before: Booking | null; after: Booking; created_at: string}[];
   availability: {buffer_minutes: number; rules: RuleRow[]; blocked: BlockedRow[]};
@@ -58,10 +61,20 @@ export function decodeSnapshot(raw: SnapshotJson): Database {
     preferences: [...(s.preferences ?? [])], created_at: s.created_at
   }));
   const types: CourseType[] = (raw.types ?? []).map(t => ({id: t.id, name: t.name, default_duration: t.default_duration, color: t.color}));
-  const bookings: Booking[] = (raw.bookings ?? []).map(b => ({...b, notes: b.notes ?? ''}));
+  const bookings: Booking[] = (raw.bookings ?? []).map(b => ({...b, notes: b.notes ?? '', package_id: b.package_id ?? null}));
   const reviews: TrainingReview[] = (raw.reviews ?? []).map(r => ({...r, effort: r.effort ?? null, notes: r.notes ?? ''}));
   const events: BookingEvent[] = (raw.events ?? []).map(e => ({...e, before: e.before ?? null}));
-  return {coach, students, types, bookings, reviews, booking_events: events, availability: decodeAvailability(raw.availability)};
+  // 服务端尚未升级时没有这两项：按空读取，排课与档案仍可用，只是暂时看不到套餐。
+  const packages: LessonPackage[] = (raw.packages ?? []).map(p => ({
+    id: p.id, coach_id: p.coach_id, student_id: p.student_id, course_type_id: p.course_type_id ?? null,
+    name: p.name, total_sessions: p.total_sessions, initial_used: p.initial_used ?? 0,
+    purchased_on: p.purchased_on, expires_on: p.expires_on ?? null, notes: p.notes ?? '', created_at: p.created_at
+  }));
+  const lesson_tx: LessonTransaction[] = (raw.lesson_tx ?? []).map(t => ({
+    id: t.id, coach_id: t.coach_id, package_id: t.package_id, booking_id: t.booking_id ?? null,
+    kind: t.kind, quantity: t.quantity, reason: t.reason ?? '', created_at: t.created_at
+  }));
+  return {coach, students, types, bookings, reviews, booking_events: events, packages, lesson_tx, availability: decodeAvailability(raw.availability)};
 }
 
 export function studentRow(s: Student) {
@@ -91,11 +104,26 @@ export function availabilityPayload(a: AvailabilitySettings) {
   };
 }
 
+/** 套餐 → package_save RPC 参数；套餐 id 由客户端生成，重放不会建出第二份。 */
+export function packagePayload(p: LessonPackage) {
+  return {
+    p_id: p.id,
+    p_student: p.student_id,
+    p_type: p.course_type_id,
+    p_name: p.name,
+    p_total: p.total_sessions,
+    p_initial: p.initial_used,
+    p_purchased: p.purchased_on,
+    p_expires: p.expires_on,
+    p_notes: p.notes
+  };
+}
+
 /** 空数据库占位：仅在远端模式登录前使用，界面由 App 的门禁挡住。 */
 export function emptyDatabase(): Database {
   return {
     coach: {id: '', name: '', email: '', created_at: new Date(0).toISOString()},
-    students: [], types: [], bookings: [], reviews: [], booking_events: [],
+    students: [], types: [], bookings: [], reviews: [], booking_events: [], packages: [], lesson_tx: [],
     availability: defaultAvailability()
   };
 }

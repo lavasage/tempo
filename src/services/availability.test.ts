@@ -15,7 +15,7 @@ const iso=(time:string,day=MONDAY)=>new Date(`${day}T${time}:00`).toISOString();
 function rule(start:string,end:string,days=[1]):WeeklyWindow{return {id:crypto.randomUUID(),days,start,end};}
 function fixture(){const data=seed();data.bookings=[];return data;}
 function booking(data:ReturnType<typeof seed>,start='09:00',end='10:00',day=MONDAY):Booking {
-  return {id:crypto.randomUUID(),coach_id:data.coach.id,student_id:data.students[0]!.id,course_type_id:data.types[0]!.id,start_at:iso(start,day),end_at:iso(end,day),status:'confirmed',notes:'',created_at:iso('00:00'),updated_at:iso('00:00')};
+  return {id:crypto.randomUUID(),coach_id:data.coach.id,student_id:data.students[0]!.id,course_type_id:data.types[0]!.id,start_at:iso(start,day),end_at:iso(end,day),status:'confirmed',notes:'',package_id:null,created_at:iso('00:00'),updated_at:iso('00:00')};
 }
 afterEach(()=>vi.unstubAllGlobals());
 

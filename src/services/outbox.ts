@@ -4,7 +4,7 @@
  * 队列是「至少一次」语义，因此每个操作都必须幂等：预约创建用课程 id 做请求键，
  * 状态变更与 upsert 天然可重放。
  */
-import type {AvailabilitySettings,Booking,CourseType,Status,Student,TrainingReview} from '../types';
+import type {AvailabilitySettings,Booking,CourseType,LessonPackage,Status,Student,TrainingReview} from '../types';
 
 export type SyncOp =
   | {kind: 'student.save'; student: Student}
@@ -13,7 +13,9 @@ export type SyncOp =
   | {kind: 'booking.update'; booking: Booking}
   | {kind: 'booking.status'; id: string; status: Status}
   | {kind: 'review.save'; review: TrainingReview}
-  | {kind: 'availability.save'; settings: AvailabilitySettings};
+  | {kind: 'availability.save'; settings: AvailabilitySettings}
+  | {kind: 'package.save'; pkg: LessonPackage}
+  | {kind: 'lesson.revert'; bookingId: string; reason: string};
 
 export interface SyncEnvelope {
   /** 本地唯一标识，便于排查与展示，不参与服务端判断。 */
@@ -35,7 +37,7 @@ export interface OutboxSnapshot {
   lastOk: number | null;
 }
 
-const KINDS = new Set(['student.save','type.save','booking.create','booking.update','booking.status','review.save','availability.save']);
+const KINDS = new Set(['student.save','type.save','booking.create','booking.update','booking.status','review.save','availability.save','package.save','lesson.revert']);
 
 /** 队列按账号隔离：换账号不会互相推送。 */
 export function outboxKey(coachId: string) {
